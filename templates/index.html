@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Data Homepage</title>
+    <!-- D3 library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js from CDN -->
+    <!-- Plotly library -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <style>
+        #car {
+            font-family: monospace; /* Use a monospaced font for ASCII art */
+            white-space: pre; /* Preserve whitespace */
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flight Data Homepage</h1>
+    
+    <h2>Available Routes:</h2>
+    <ul>
+        {% for route in available_routes %}
+        <li>
+            <a href="{{ route }}">{{ route }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
