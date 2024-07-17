@@ -1,5 +1,7 @@
 from flask import Flask, render_template, jsonify
 from sqlalchemy import create_engine, text, inspect
+from weather_function import origin_fcstfn #importing function from separate file
+from plane_function import aircraft_age
 
 app = Flask(__name__)
 engine=create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict', echo=True)
@@ -43,6 +45,24 @@ def get_model_data():
 @app.route('/visualize')
 def show_maps():
     return render_template('visualize.html')
+
+@app.route('/weather')
+def weather():
+    date = '2024-07-17' #example date 
+    origination = 'LAX' #example airport
+
+    forecast_data = origin_fcstfn(date, origination)
+    return jsonify(forecast_data)
+
+
+@app.route('/plane')
+def plane():
+    date = '2024-07-17' #example date 
+    flight_num = 'wn658' #example flight number
+
+    plane_data = aircraft_age(date, flight_num)
+
+    return jsonify(plane_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
