@@ -8,6 +8,8 @@ import re
 
 #define function for 7-day forecast for origin airport
 def origin_fcstfn (date, origination):
+    
+    origination = origination.upper()
 
     #read in airport codes lat/long file. Source: https://github.com/ip2location/ip2location-iata-icao/blob/master/iata-icao.csv
     airport_codes = pd.read_csv('data/airport_codes_.csv')
