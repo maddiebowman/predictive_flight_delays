@@ -15,6 +15,8 @@ from datetime import datetime
 def aircraft_age(date, flight_num):
     from api_key import flight_api_key
     
+    flight_num = flight_num.lower()
+
     #retrieve flight information
     
     flight_url = 'http://api.aviationstack.com/v1/flights'
