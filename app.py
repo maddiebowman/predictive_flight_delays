@@ -2,9 +2,11 @@ from flask import Flask, render_template, jsonify
 from sqlalchemy import create_engine, text, inspect
 from weather_function import origin_fcstfn #importing function from separate file
 from plane_function import aircraft_age
+from flask_cors import CORS
 
 app = Flask(__name__)
 engine=create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict', echo=True)
+CORS(app)
 
 # Setting up homepage that displays the API routes
 @app.route("/")
@@ -46,20 +48,19 @@ def get_model_data():
 def show_maps():
     return render_template('visualize.html')
 
-@app.route('/weather')
-def weather():
-    date = '2024-07-17' #example date 
-    origination = 'LAX' #example airport
+@app.route('/weather/<date>/<origination>/')
+def weather(date, origination):
 
+    #example date 2024-07-17; example origination LAX
     forecast_data = origin_fcstfn(date, origination)
+
     return jsonify(forecast_data)
 
 
-@app.route('/plane')
-def plane():
-    date = '2024-07-17' #example date 
-    flight_num = 'wn658' #example flight number
 
+@app.route('/plane/<date>/<flight_num>/')
+def plane(date, flight_num):
+    #example date 2024-07-17; example flight_num wn658
     plane_data = aircraft_age(date, flight_num)
 
     return jsonify(plane_data)
