@@ -60,17 +60,27 @@ Following the process of feature engineering the following were selected for tra
 
 ## Resources
 #### Helpful Documentation
-- [seaborn.countplot](https://seaborn.pydata.org/generated/seaborn.countplot.html)
-- [seaborn.heatmap](https://seaborn.pydata.org/generated/seaborn.heatmap.html)
-- [Feature Importances with a Forest of Trees](https://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html)
-- [statsmodels User Guide](https://www.statsmodels.org/stable/user-guide.html)
+- [Seaborn - countplot](https://seaborn.pydata.org/generated/seaborn.countplot.html)
+- [Seaborn - heatmap](https://seaborn.pydata.org/generated/seaborn.heatmap.html)
+- [scikit-learn - Feature Importances with Forest of Trees](https://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html)
+- [statsmodels - User Guide](https://www.statsmodels.org/stable/user-guide.html)
 - [SciPy - chi2_contingency](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.chi2_contingency.html)
+- [mdn web docs - JavaScript 'Map'](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+- [mdn web docs - EventTarget: addEventListener() method](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/)
+- [mdn web docs -  CSS Performance Optimization](https://developer.mozilla.org/en-US/docs/Learn/Performance/CSS)
+- [Leaflet Plugins](https://leafletjs.com/plugins.html)
 
 #### Additional Resources
+- [CSS Beginner Tutorial](https://www.htmldog.com/guides/css/beginner/)
 - [Favicon - Free Icon Library](https://icons8.com/icons)
 - [Hoverable Sidenav Buttons - W3](https://www.w3schools.com/howto/howto_css_sidenav_buttons.asp)
 - [CSS Styling a Navigation Bar](https://codetheweb.blog/style-a-navigation-bar-css/)
 - [Displaying Live Images on HTML with Flask](https://stackoverflow.com/questions/46785507/python-flask-display-image-on-a-html-page)
+- [JavaScript HTML DOM EventListener](https://www.w3schools.com/js/js_htmldom_eventlistener.asp)
+- [HTML Forms](https://www.w3schools.com/html/html_forms.asp)
+- [HTML id Attribute](https://www.w3schools.com/html/html_id.asp)
+- [CSS ID Selectors - HTML Elements](https://blog.hubspot.com/website/css-id#:~:text=A%20CSS%20ID%20selector%20uses,to%20the%20element%20in%20brackets.)
+- [How to Use id="" or class=""](https://forum.freecodecamp.org/t/how-to-know-when-to-use-id-or-class/506353)
 
 
 ## Contributors
