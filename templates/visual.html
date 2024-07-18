@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supporting Visuals</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        .box {
+            width: calc(50% - 10px);
+            margin-bottom: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .image-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .image-container img {
+            width: 48%;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Supporting Visuals</h1>
+
+    <div class="container">
+        <div class="box">
+            <h2>Airline Carriers Analysis</h2>
+            <div class="image-container">
+                <img src="../images/heatmap_monthlycarrierdelays.png" alt="Monthly Airline Delays">
+                <img src="../images/countplot_carrierdelays.png" alt="Airline Carrier Delay Count">
+            </div>
+        </div>
+        <div class="box">
+            <h2>Airport Congestion</h2>
+            <div class="image-container">
+                <img src="../images/yearly_delayrates_top5airports.png" alt="Peak Travel Times(Yearly)">
+                <img src="../images/heatmap_monthlyairportdelays.png" alt="Heatmap Monthly Airport Delays">
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="box">
+            <h2>Aircraft Health</h2>
+            <div class="image-container">
+                <img src="../images/aircraft_analysis1.png" alt="Aircraft Analysis 1">
+                <img src="../images/aircraft_analysis2.png" alt="Aircraft Analysis 2">
+            </div>
+        </div>
+        <div class="box">
+            <h2>Peak Travel Times</h2>
+            <div class="image-container">
+                <img src="../images/linechart_hourlydelayrates.png" alt="Delay Rates by Departure Hour">
+                <img src="../images/dayofweek_delayrate.png" alt="Peak Travel Times(Weekly)">
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

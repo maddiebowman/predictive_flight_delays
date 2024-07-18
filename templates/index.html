@@ -3,35 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <title>Flight Data Homepage</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images/favicon.png">
     <!-- D3 library -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <!-- Chart.js library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js from CDN -->
     <!-- Plotly library -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-    <style>
-        #car {
-            font-family: monospace; /* Use a monospaced font for ASCII art */
-            white-space: pre; /* Preserve whitespace */
-            position: absolute;
-        }
-    </style>
+    <style>    
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.4;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: url('../images/clouds.png') no-repeat center center fixed;
+        background-size: cover;
+    }
+    h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    h2 {
+        color: #34495e;
+    }
+    h3 {
+        color: #0555a6;
+        text-align: center;
+    }
+    ul {
+        list-style-type: none;/*removes bullet points from lists*/
+        padding: 0; /*removes default padding*/
+    }
+    li {
+        margin-bottom: 10px;
+    }
+    a {
+        color: #3498db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    p {
+        color: #989898;
+        font-size: 13px;
+    }
+    a:hover {
+        color: #29b963;
+    }
+    #car {
+        font-family: monospace;
+        white-space: pre;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 12px;
+        color: #7f8c8d;
+    }
+    .container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .routes-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    .preview-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+    .preview-item {
+        width: 30%;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .preview-item img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+    }
+</style>
 </head>
 <body>
+<div class="container">
     <h1>Flight Data Homepage</h1>
-    
-    <h2>Available Routes:</h2>
-    <ul>
-        {% for route in available_routes %}
-        <li>
-            <a href="{{ route }}">{{ route }}</a>
-        </li>
-        {% endfor %}
-    </ul>
 
-    <script src="../static/js/weather.js"></script>
-    <script src="../static/js/plane.js"></script>
+    <div class="routes-container">
+        <h2>Available Routes</h2>
+        <ul id="routeList">
+            {% for route in available_routes %}
+            <li>
+                <a href="{{ route }}" class="route-link">{{ route }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+</div>
 
-</body>
-</html>
+<div class="container">
+    <h2>Page Previews</h2>
+    <div class="preview-container">
+        <div class="preview-item">
+            <img src="../images/flight_predict_dashboard.png" alt="Preview 1">
+            <h3>Flight Dashboard</h3>
+            <p>Predictive flight delay dashboard that analyzes user inputs to predict the chance of a delay, supported by a trip map and real-time weather features.</p>
+        </div>
+        <div class="preview-item">
+            <img src="../images/image2.png" alt="Preview 2">
+            <h3>Data</h3>
+            <p>Visit different data endpoints used to power predictions and visuals. <strong> Select:</strong>  Sampled data, all data, or see additional data and APIs.</p>
+        </div>
+        <div class="preview-item">
+            <img src="../images/image3.png" alt="Preview 3">
+            <h3>Visualize</h3>
+            <p>Static visualizations from jupyter, produced in various languages to support our feature selection, model predictions and final analysis.</p>
+        </div>
+    </div>
+</div>

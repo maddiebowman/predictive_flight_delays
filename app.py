@@ -21,7 +21,7 @@ def homepage():
     return render_template('index.html', available_routes=available_routes)
 
 @app.route('/predict')
-def get_model_data(): 
+def get_flight_predict(): 
     query=text('''
                SELECT * 
                FROM [enter text]
@@ -33,7 +33,7 @@ def get_model_data():
     return jsonify(results)
 
 @app.route('/data')
-def get_model_data(): 
+def get_data(): 
     query=text('''
                SELECT * 
                FROM [enter text]
@@ -45,7 +45,7 @@ def get_model_data():
     return jsonify(results)
 
 @app.route('/visualize')
-def show_maps():
+def show_visuals():
     return render_template('visualize.html')
 
 @app.route('/weather/<date>/<origination>/')
