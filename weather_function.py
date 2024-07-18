@@ -27,6 +27,9 @@ def origin_fcstfn (date, origination):
     origin_7dforecast = requests.get(origin_7dresponse).json()
 
     #find max temp for origin airport
+    # Initialize variables
+    origin_tmax = 0
+
     for i in range(len(origin_7dforecast['properties']['periods'])):
         start_time = origin_7dforecast['properties']['periods'][i]['startTime']
         match = re.search(f'^{date}', start_time)
@@ -35,6 +38,10 @@ def origin_fcstfn (date, origination):
             origin_tmax = origin_7dforecast['properties']['periods'][i]['temperature']
 
     #find max wind speed for origin airport
+
+    # Initialize variables
+    day_awnd = night_awnd = 0
+
     for i in range(len(origin_7dforecast['properties']['periods'])):
         start_time = origin_7dforecast['properties']['periods'][i]['startTime']
         match = re.search(f'^{date}', start_time)
@@ -52,6 +59,10 @@ def origin_fcstfn (date, origination):
     origin_awnd = max(day_awnd, night_awnd)
 
     #find chance of precipitation at origination airport
+
+    # Initialize variables
+    day_precip = 0
+
     for i in range(len(origin_7dforecast['properties']['periods'])):
         start_time = origin_7dforecast['properties']['periods'][i]['startTime']
         match = re.search(f'^{date}', start_time)
