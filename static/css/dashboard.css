@@ -1,0 +1,184 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+  }
+  .sidebar {
+    width: 450px;
+    padding: 25px;
+    padding-bottom: 80px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+  .disclaimer {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    left: 23px;
+    font-size: 10px;
+    padding: 5px;
+    color: #777;
+    text-align: center;
+    margin: 0;
+    max-width: 380px;
+    line-height: 1.2;
+  }
+  h1 {
+    text-align: right;
+    color: #333;
+    font-family: Arial, sans-serif;
+    line-height: .5;
+    font-weight: bold;
+  }
+  h2 {
+    color: #1378b8;
+    text-align: right;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    padding-top: 40px;
+  }
+  label {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  input, select {
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  button[type="button"]#resetButton,
+  button[type="submit"] {
+    display: flex;
+    margin-top: -10px;
+    text-align: center;
+  }
+  button[type="submit"] {
+    background-color: #1487e6;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    text-align: center;
+    width: 70%;
+    margin-left: 10px;
+  }
+  button[type="submit"]:hover {
+    background-color: #18b150;
+  }
+  button[type="button"]#resetButton {
+    background-color: #f44336;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    text-align: center;
+    width: 30%;
+  }
+  button[type="button"]#resetButton:hover {
+    background-color: #e53935; /* Darker red */
+  }
+  #result {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+  }
+  #map {
+    flex-grow: 1;
+  }
+  #mySidenav a {
+    position: absolute; /* Position relative to browser window */
+    left: -80px; /* Positioned outside of the screen */
+    transition: 0.3s; /* Transition on hover */
+    padding: 10px;
+    width: 100px;
+    text-decoration: none;
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: white;
+    border-radius: 0 5px 5px 0; /* Round corners on top right and bottom right side */
+  }
+  #mySidenav a:hover {
+    left: 0;
+  }
+  #home {
+    top: 20px;
+    background-color: #18b150;
+  }
+  #visuals {
+    top: 80px;
+    background-color: #2196F3;
+  }
+  #departureTime{
+    font-size: 15px;
+    font-family: Arial, sans-serif;     
+  }
+  .popup-content {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  min-width: 200px;
+}
+
+.popup-content .airport-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.popup-content .airport-location {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.popup-content h4 {
+  margin: 5px 0;
+  color: #2196F3;
+  font-size: 16px;
+}
+
+.popup-content .weather-details {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.popup-content .weather-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.popup-content .weather-label {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.popup-content .weather-value {
+  flex-shrink: 0;
+  text-align: right;
+  margin-left: 10px;
+  color: #e74c3c;
+  font-size: 14px;
+}
