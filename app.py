@@ -1,8 +1,9 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, send_from_directory, url_for
 from sqlalchemy import create_engine, text, inspect
 from weather_function import origin_fcstfn #importing function from separate file
 from plane_function import aircraft_age
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 engine=create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict', echo=True)
@@ -13,9 +14,9 @@ CORS(app)
 def homepage():
     """List all available API routes."""
     available_routes =  [
-    ("/predict"),
-    ("/data"),
-    ("/visualize")
+        {"url": "/predict", "name": "Predict Flight Delays"},
+        {"url": "/visuals", "name": "Visualizations"},
+        {"url": "/data", "name": "View Data"}
     ]
 
     return render_template('index.html', available_routes=available_routes)
@@ -36,16 +37,12 @@ def homepage():
     # return render_template('index.html', available_routes=available_routes)
 
 @app.route('/predict')
-def get_flight_predict(): 
-    query=text('''
-               SELECT * 
-               FROM [enter text]
-               ''')
-    conn=engine.connect()
-    results=conn.execute(query)
-    conn.close()
-    results=[tuple(row[1:]) for row in results]
-    return jsonify(results)
+def get_flight_predict():
+    return render_template('dashboard.html')
+
+@app.route('/visuals')
+def show_visuals():
+    return render_template('visual.html')
 
 @app.route('/data')
 def get_data(): 
@@ -85,11 +82,6 @@ def geo_data(offset):
         data_kv = [dict(zip(columns, row)) for row in data]
     return jsonify(data_kv)
 
-
-@app.route('/visualize')
-def show_visuals():
-    return render_template('visualize.html')
-
 @app.route('/weather/<date>/<origination>/')
 def weather(date, origination):
 
@@ -106,6 +98,11 @@ def plane(date, flight_num):
     plane_data = aircraft_age(date, flight_num)
 
     return jsonify(plane_data)
+
+# Ensure images are connected to application through flask
+@app.route('/images/<path:filename>')
+def serve_image(filename):
+    return send_from_directory(os.path.join(app.root_path, 'images'), filename)
 
 if __name__ == '__main__':
     app.run(debug=True)

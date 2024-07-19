@@ -3,50 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supporting Visuals</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin-bottom: 40px;
-        }
-        .box {
-            width: calc(50% - 10px);
-            margin-bottom: 20px;
-            padding: 20px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-        .box h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .image-container {
-            display: flex;
-            justify-content: space-between;
-        }
-        .image-container img {
-            width: 48%;
-            height: auto;
-            display: block;
-        }
-    </style>
+    <title>Historical Visuals</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('serve_image', filename='favicon.ico') }}">
+    <!-- CSS Style Sheets -->
+    <link rel="stylesheet" href="../static/css/visual.css">
+    
 </head>
 <body>
-    <h1>Supporting Visuals</h1>
-
+    <div id="mySidenav" class="sidenav">
+      <a href="{{ url_for('homepage') }}" id="home">Home</a>
+      <a href="{{ url_for('get_flight_predict') }}" id="predict">Predict</a>
+    </div>
+    <h1>Historical Visualizations</h1>
     <div class="container">
         <div class="box">
             <h2>Airline Carriers Analysis</h2>
@@ -82,4 +51,3 @@
     </div>
 </body>
 </html>
-

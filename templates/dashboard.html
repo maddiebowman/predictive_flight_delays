@@ -4,152 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flight Dashboard</title>
-  <!-- CSS Style Sheet -->
-  <link rel="stylesheet" href="../static/css/styles.css">
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="../images/favicon.png">
+  <link rel="icon" type="image/png" href="{{ url_for('serve_image', filename='favicon.ico') }}">  
+  <!-- CSS/Style Sheets -->
+  <link rel="stylesheet" href="../static/css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
   <!-- Leaflet library -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="../static/js/dashboard.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      min-height: 100vh;
-      background-color: #f0f0f0;
-    }
-    .sidebar {
-      width: 450px;
-      padding: 25px;
-      padding-bottom: 80px;
-      background-color: white;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-    .disclaimer {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      left: 23px;
-      font-size: 10px;
-      padding: 5px;
-      color: #777;
-      text-align: center;
-      margin: 0;
-      max-width: 380px;
-      line-height: 1.2;
-    }
-    h1 {
-      text-align: right;
-      color: #333;
-      font-family: Arial, sans-serif;
-      line-height: .5;
-      font-weight: bold;
-    }
-    h2 {
-      color: #1378b8;
-      text-align: right;
-      font-family: Arial, sans-serif;
-      font-size: 20px;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      padding-top: 40px;
-    }
-    label {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    input, select {
-      margin-bottom: 15px;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    button {
-      background-color: #1487e6;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #18b150;
-    }
-    #result {
-      margin-top: 20px;
-      padding: 10px;
-      border-radius: 4px;
-      text-align: center;
-      font-weight: bold;
-    }
-    #map {
-      flex-grow: 1;
-    }
-    #mySidenav a {
-      position: absolute; /* Position relative to browser window */
-      left: -80px; /* Positioned outside of the screen */
-      transition: 0.3s; /* Transition on hover */
-      padding: 10px;
-      width: 100px;
-      text-decoration: none;
-      font-size: 20px;
-      font-family: Arial, sans-serif;
-      font-weight: bold;
-      color: white;
-      border-radius: 0 5px 5px 0; /* Rounded corners on top right and bottom right side */
-    }
-    #mySidenav a:hover {
-      left: 0;
-    }
-    #home {
-      top: 20px;
-      background-color: #18b150;
-    }
-    #visual {
-      top: 80px;
-      background-color: #2196F3; /* Blue */
-    }
-    #departureTime{
-      font-size: 15px;
-      font-family: Arial, sans-serif;     
-    }
-  </style>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="../static/js/dashboard.js" defer></script>
 </head>
 <body>
   <div id="mySidenav" class="sidenav">
-    <a href="index.html" id="home">Home</a>
-    <a href="visual.html" id="visual">Visuals</a>
+    <a href="{{ url_for('homepage') }}" id="home">Home</a>
+    <a href="{{ url_for('show_visuals') }}" id="visuals">Visuals</a>
   </div>
   <div class="sidebar">
     <h1>Flight Dashboard</h1>
     <h2>Predicting US Flight Delays</h2>
     <form id="flightForm">
       <label for="origin">Departing Airport:</label>
-      <select id="origin" name="origin" required>
-        <option value="">Select Departing Airport</option>
-      </select>
+      <input list="origins" id="origin" name="origin" required>
+      <datalist id="origins"></datalist>
+
       <label for="destination">Destination Airport:</label>
-      <select id="destination" name="destination" required>
-        <option value="">Select Destination Airport</option>
-      </select>
-      <label for="flightNumber">Flight Number:</label>
-      <input type="text" id="flightNumber" name="flightNumber" required>
+      <input list="destinations" id="destination" name="destination" required>
+      <datalist id="destinations"></datalist>
+
+      <!-- <label for="flightNumber">Flight Number:</label> -->
+      <!-- <input type="text" id="flightNumber" name="flightNumber" required> -->
+       
       <label for="departureTime">Scheduled Departure:</label>
       <input type="datetime-local" id="departureTime" name="departureTime" required>
-      <button type="submit">Submit</button>
+      <div class="button-container">
+        <button type="button" id="resetButton">Reset</button>
+        <button type="submit">Submit</button>
+      </div>
     </form>
     <div id="result"></div>
     <p class="disclaimer">*Flight delays are based on a predictive machine learning model, trained on historical weather and flight data from 2019. Output predictions may not be 100% accurate.</p>
   </div>
   <div id="map"></div>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script src="../static/js/maps.js"></script>
+  <script src="../static/js/dashboard.js" defer></script>
 </body>
 </html>
