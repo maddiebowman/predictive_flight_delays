@@ -20,6 +20,21 @@ def homepage():
 
     return render_template('index.html', available_routes=available_routes)
 
+# Kevin's notes below
+    # # if POST
+    # # run python function itself and return dictionary
+    # #date = connect user input here
+    # #origination = connect user input here
+    # #weather_result = origin_fcstfn(date, origination)
+    # request.form # get everything else
+    # # data needs to look like this: 
+    # # input=[X, X, X, X, X]
+    # # combine all the input data
+    # result=model.predict(input)
+    # return render_template('index.html', available_routes=available_routes, result=result)
+    # # if GET
+    # return render_template('index.html', available_routes=available_routes)
+
 @app.route('/predict')
 def get_flight_predict(): 
     query=text('''
@@ -43,6 +58,33 @@ def get_data():
     conn.close()
     results=[tuple(row[1:]) for row in results]
     return jsonify(results)
+
+#BH Test. determine which columns we need to query
+#delay y/n, airport code, lat, long, airline
+
+@app.route('/data_test/<int:offset>')
+def geo_data(offset):
+    offset = offset * 100000
+    conn = psycopg2.connect(
+        dbname="flightpredict",
+        user="postgres",
+        password="postgres",
+        host="localhost",
+        port="5432"
+    )
+    with conn.cursor() as cur:
+        query = '''
+                SELECT "DEP_DEL15", "CARRIER_NAME", "PLANE_AGE", "DEPARTING_AIRPORT", "LATITUDE", "LONGITUDE"
+                FROM flights
+                LIMIT 100000 
+                OFFSET %s
+                '''
+        cur.execute(query, (offset,))
+        data = cur.fetchall()
+        columns = [desc[0] for desc in cur.description]
+        data_kv = [dict(zip(columns, row)) for row in data]
+    return jsonify(data_kv)
+
 
 @app.route('/visualize')
 def show_visuals():
