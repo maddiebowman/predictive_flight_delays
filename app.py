@@ -48,7 +48,7 @@ def show_visuals():
 def get_data(): 
     query=text('''
                SELECT * 
-               FROM [enter text]
+               FROM flight
                ''')
     conn=engine.connect()
     results=conn.execute(query)
