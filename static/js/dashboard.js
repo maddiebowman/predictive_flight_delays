@@ -80,6 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     L.polyline([originCoords, destCoords], { color: 'red', weight: 3, dashArray: '10, 10' }).addTo(myMap);
 
+    const originPopupContent = originForecast ? createPopupContent(origin, originForecast) : `<div class="popup-content"><p>Forecast unavailable for ${origin.name}</p></div>`;
+    const destPopupContent = destinationForecast ? createPopupContent(destination, destinationForecast) : `<div class="popup-content"><p>Forecast unavailable for ${destination.name}</p></div>`;
+
     L.marker(originCoords, { title: origin.name })
       .bindPopup(createPopupContent(origin, originForecast))
       .addTo(myMap)
@@ -134,7 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
           console.error('Error fetching forecasts:', error);
-          document.getElementById('forecast-content').innerHTML = `<p>Error: ${error.message}</p>`;
         });
     } else {
       console.error('Could not find airport data');
