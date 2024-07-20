@@ -1,10 +1,11 @@
 from flask import Flask, render_template, jsonify, send_from_directory, url_for
 from sqlalchemy import create_engine, text, inspect
-from weather_function import origin_fcstfn, destination_fcstfn #importing function from separate file
+from weather_function import origin_fcstfn, origin_fcstfn_2, precip_fn #importing function from separate file
 from plane_function import aircraft_age
 from flask_cors import CORS
 
 from datetime import date, datetime
+from api_key import openweather_api
 
 import os
 
@@ -13,6 +14,7 @@ app = Flask(__name__)
 engine=create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict', echo=True)
 CORS(app)
 
+# Returns the current local date
 today = date.today()
 
 # Setting up homepage that displays the API routes
@@ -96,9 +98,11 @@ def show_visuals():
 
 #weather at origination
 @app.route('/weather/<flight_date>/<origination>/')
-# Returns the current local date
+
+
 def weather(flight_date, origination):
-  
+    
+
     try:
             flight_date_obj = datetime.strptime(flight_date, "%Y-%m-%d").date()
     except ValueError:
@@ -107,8 +111,22 @@ def weather(flight_date, origination):
     if flight_date_obj < today:
         return 'Date is in the past. Please enter a date within a 7-day range.', 400
     else:
-        forecast_data = origin_fcstfn(flight_date, origination)
+        forecast_data = origin_fcstfn_2(flight_date, origination)
         return jsonify(forecast_data)
+
+#precipitation at origination
+@app.route('/precip/<flight_date>/<origin_airport>/')
+def precipitation(flight_date, origin_airport):
+    try:
+            flight_date_obj = datetime.strptime(flight_date, "%Y-%m-%d").date()
+    except ValueError:
+            return 'Invalid date format. Please use YYYY-MM-DD.', 400
+
+    if flight_date_obj < today:
+        return 'Date is in the past. Please enter a date within a 7-day range.', 400
+    else:
+        precipitation_data = precip_fn(flight_date, origin_airport)
+        return jsonify(precipitation_data)
 
 
 @app.route('/plane/<flight_date>/<flight_num>/')
