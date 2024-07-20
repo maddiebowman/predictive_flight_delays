@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flight Dashboard</title>
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="{{ url_for('serve_image', filename='favicon.ico') }}">  
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.ico') }}">  
   <!-- CSS/Style Sheets -->
-  <link rel="stylesheet" href="../static/css/dashboard.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
   <!-- Leaflet library -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-  <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <!-- D3 library -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- Dashboard JavaScript -->
   <script src="../static/js/dashboard.js" defer></script>
 </head>
 <body>
@@ -47,7 +49,9 @@
     <p class="disclaimer">*Flight delays are based on a predictive machine learning model, trained on historical weather and flight data from 2019. Output predictions may not be 100% accurate.</p>
   </div>
   <div id="map"></div>
+  <!-- Leaflet JavaScript -->
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script src="../static/js/dashboard.js" defer></script>
+  <!-- Dashboard JavaScript -->
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>
 </body>
 </html>

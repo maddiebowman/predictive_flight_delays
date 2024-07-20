@@ -136,10 +136,5 @@ def plane(flight_date, flight_num):
 
     return jsonify(plane_data)
 
-# Ensure images are connected to application through flask
-@app.route('/images/<path:filename>')
-def serve_image(filename):
-    return send_from_directory(os.path.join(app.root_path, 'images'), filename)
-
 if __name__ == '__main__':
     app.run(debug=True)
