@@ -3,3 +3,9 @@
 .ipynb_checkpoints/flight_delay-checkpoint.ipynb
 .virtual_documents/
 data/.DS_Store
+.ipynb_checkpoints/
+__pycache__/api_key.cpython-310.pyc
+__pycache__/plane_function.cpython-310.pyc
+__pycache__/weather_function.cpython-310.pyc
+notebooks/__pycache__/
+data/.ipynb_checkpoints/
