@@ -68,31 +68,69 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+  const TransparentOriginIcon = L.Icon.extend({options: {
+    iconUrl: '/static/images/origin_marker.png',
+    iconSize: [50, 50],
+    iconAnchor: [25, 50],
+    popupAnchor: [0, -50],
+    className: 'transparent-icon'
+  },
+  createIcon: function (oldIcon) {
+    const img = L.Icon.prototype.createIcon.call(this, oldIcon);
+    img.style.backgroundColor = 'transparent';
+    return img;
+  }
+});
+
+  const TransparentDestinationIcon = L.Icon.extend({options: {
+    iconUrl: '/static/images/destination_marker.png',
+    iconSize: [50, 50],
+    iconAnchor: [25, 50],
+    popupAnchor: [0, -50],
+    className: 'transparent-icon'
+  },
+  createIcon: function (oldIcon) {
+    const img = L.Icon.prototype.createIcon.call(this, oldIcon);
+    img.style.backgroundColor = 'transparent';
+    return img;
+  }
+});
+  
+  const originIcon = new TransparentOriginIcon();
+  const destinationIcon = new TransparentDestinationIcon();
+
   function drawFlightPath(origin, destination, originForecast, destinationForecast) {
+    console.log("Drawing flight path");
+    console.log("Origin", origin);
+    console.log("Desstination", destination);
+
     myMap.eachLayer((layer) => {
       if (layer instanceof L.Polyline || layer instanceof L.Marker) {
         myMap.removeLayer(layer);
       }
     });
-
+  
     const originCoords = [parseFloat(origin.lat), parseFloat(origin.lon)];
     const destCoords = [parseFloat(destination.lat), parseFloat(destination.lon)];
 
+    console.log("Origin Coordinates:", originCoords);
+    console.log("Destination Coordinates:", destCoords);
+  
     L.polyline([originCoords, destCoords], { color: 'red', weight: 3, dashArray: '10, 10' }).addTo(myMap);
-
+  
     const originPopupContent = originForecast ? createPopupContent(origin, originForecast) : `<div class="popup-content"><p>Forecast unavailable for ${origin.name}</p></div>`;
     const destPopupContent = destinationForecast ? createPopupContent(destination, destinationForecast) : `<div class="popup-content"><p>Forecast unavailable for ${destination.name}</p></div>`;
-
-    L.marker(originCoords, { title: origin.name })
-      .bindPopup(createPopupContent(origin, originForecast))
+  
+    L.marker(originCoords, { icon: originIcon, title: origin.name })
+      .bindPopup(originPopupContent)
       .addTo(myMap)
       .openPopup();
-
-    L.marker(destCoords, { title: destination.name })
-      .bindPopup(createPopupContent(destination, destinationForecast))
+  
+    L.marker(destCoords, { icon: destinationIcon, title: destination.name })
+      .bindPopup(destPopupContent)
       .addTo(myMap)
       .openPopup();
-
+  
     const bounds = L.latLngBounds([originCoords, destCoords]);
     myMap.fitBounds(bounds, { padding: [50, 50] });
   }

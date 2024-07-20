@@ -82,3 +82,25 @@ p {
 .route-button:hover {
     background-color: #29b963;
 }
+
+.github-button-container {
+    position: fixed;
+    bottom: 25px;
+    right: 28px;
+    z-index: 1000;
+}
+
+.github-button {
+    background-color: #24292e;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.github-button:hover {
+    background-color: #1a1e22;
+}

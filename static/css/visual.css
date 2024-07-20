@@ -3,18 +3,66 @@ body {
     padding: 20px;
     box-sizing: border-box;
 }
-h1 {
-    text-align: center;
+
+.header {
+    display: flex;
+    align-items: center;
     margin-bottom: 70px;
 }
+
+h1 {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.nav-buttons {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.nav-button {
+    display: inline-block;
+    padding: 10px;
+    width: 100px;
+    text-decoration: none;
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+    margin-right: 10px;
+    margin-top: 25px;
+    margin-left: 1px;
+}
+
+#home {
+    background-color: #18b150;
+}
+
+#home:hover {
+    background-color: #0f9641;
+}
+
+#predict {
+    background-color: #2196F3;
+}
+
+#predict:hover {
+    background-color: #1485e2;
+}
+
 .container {
+    width: 100%;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: stretch;
     margin-bottom: 40px;
 }
+
 .box {
-    width: calc(50% - 10px);
+    width: 100%;
     margin-bottom: 20px;
     padding: 20px;
     box-sizing: border-box;
@@ -22,40 +70,35 @@ h1 {
     border-radius: 8px;
     background-color: #f9f9f9;
 }
+
 .box h2 {
     text-align: center;
     margin-bottom: 20px;
 }
+
 .image-container {
     display: flex;
     justify-content: space-between;
 }
+
 .image-container img {
     width: 48%;
     height: auto;
     display: block;
 }
-#mySidenav a {
-    position: absolute; /* Position relative to browser window */
-    left: -80px; /* Positioned outside of the screen */
-    transition: 0.3s; /* Transition on hover */
-    padding: 10px;
-    width: 100px;
-    text-decoration: none;
-    font-size: 20px;
-    font-family: Arial, sans-serif;
-    font-weight: bold;
-    color: white;
-    border-radius: 0 5px 5px 0; /* Round corners on top right and bottom right side */
+
+#heatmap, #yearly-map {
+    height: 500px;
+    width: 100%;
 }
-#mySidenav a:hover {
-    left: 0;
-}
-#home {
-    top: 20px;
-    background-color: #18b150;
-}
-#predict {
-    top: 80px;
-    background-color: #2196F3;
+
+@media (max-width: 768px) {
+    .image-container {
+    flex-direction: column;
+    }
+
+.image-container img {
+    width: 100%;
+    margin-bottom: 20px;
+    }
 }

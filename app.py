@@ -90,12 +90,6 @@ def geo_data(offset):
         data_kv = [dict(zip(columns, row)) for row in data]
     return jsonify(data_kv)
 
-
-
-@app.route('/visualize')
-def show_visuals():
-    return render_template('visualize.html')
-
 #weather at origination
 @app.route('/weather/<flight_date>/<origination>/')
 

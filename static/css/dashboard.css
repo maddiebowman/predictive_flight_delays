@@ -182,3 +182,13 @@ body {
   color: #e74c3c;
   font-size: 14px;
 }
+
+.transparent-icon {
+  background: none !important;
+  border: none;
+  box-shadow: none;
+}
+
+.leaflet-marker-icon {
+  background-color: transparent !important;
+}
