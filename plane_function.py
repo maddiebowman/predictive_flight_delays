@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 
 #define function
-def aircraft_age(date, flight_num):
+def aircraft_age(flight_date, flight_num):
     from api_key import flight_api_key
     
     flight_num = flight_num.lower()
@@ -83,8 +83,8 @@ def aircraft_age(date, flight_num):
     #access mfr year as integer
     mfr_year = int(mfr_years[0])
 
-    #extract year from date input and convert to integer
-    flight_year = datetime.strptime(date, '%Y-%m-%d').year
+    #extract year from flight_date input and convert to integer
+    flight_year = datetime.strptime(flight_date, '%Y-%m-%d').year
 
     #calculate plane age
     plane_age = flight_year - mfr_year
@@ -93,5 +93,5 @@ def aircraft_age(date, flight_num):
         'registration/tail number': tail_num,
         "plane's manufactured year": mfr_year,
         'flight year': flight_year,
-        'plane age based on flight date': plane_age
+        'plane age based on flight flight_date': plane_age
     }

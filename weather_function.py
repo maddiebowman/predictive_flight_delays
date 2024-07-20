@@ -6,8 +6,10 @@ import pprint
 import json
 import re
 
+ 
+
 #define function for 7-day forecast for origin airport
-def origin_fcstfn (date, origination):
+def origin_fcstfn (flight_date, origination):
     
     origination = origination.upper()
 
@@ -29,15 +31,17 @@ def origin_fcstfn (date, origination):
     #find max temp for origin airport
     for i in range(len(origin_7dforecast['properties']['periods'])):
         start_time = origin_7dforecast['properties']['periods'][i]['startTime']
-        match = re.search(f'^{date}', start_time)
+        match = re.search(f'^{flight_date}', start_time)
         daytime = origin_7dforecast['properties']['periods'][i]['isDaytime']
         if match and daytime == True:
             origin_tmax = origin_7dforecast['properties']['periods'][i]['temperature']
 
+
     #find max wind speed for origin airport
+    
     for i in range(len(origin_7dforecast['properties']['periods'])):
         start_time = origin_7dforecast['properties']['periods'][i]['startTime']
-        match = re.search(f'^{date}', start_time)
+        match = re.search(f'^{flight_date}', start_time)
         daytime = origin_7dforecast['properties']['periods'][i]['isDaytime']
         if match and daytime == True:
             try:
@@ -54,7 +58,7 @@ def origin_fcstfn (date, origination):
     #find chance of precipitation at origination airport
     for i in range(len(origin_7dforecast['properties']['periods'])):
         start_time = origin_7dforecast['properties']['periods'][i]['startTime']
-        match = re.search(f'^{date}', start_time)
+        match = re.search(f'^{flight_date}', start_time)
         daytime = origin_7dforecast['properties']['periods'][i]['isDaytime']
         if match and daytime == True:
             day_precip = origin_7dforecast['properties']['periods'][i]['probabilityOfPrecipitation']['value']
@@ -66,9 +70,113 @@ def origin_fcstfn (date, origination):
                 night_precip = 0
     origin_precip = max(day_precip, night_precip)
 
+    #find detailed forecast for origin airport
+    for i in range(len(origin_7dforecast['properties']['periods'])):
+        start_time = origin_7dforecast['properties']['periods'][i]['startTime']
+        match = re.search(f'^{flight_date}', start_time)
+        daytime = origin_7dforecast['properties']['periods'][i]['isDaytime']
+        if match and daytime == True:
+            day_forecast = origin_7dforecast['properties']['periods'][i]['detailedForecast']
+        if match and daytime == False:
+            night_forecast = origin_7dforecast['properties']['periods'][i]['detailedForecast']
+
 
     return {
         'max_temp': origin_tmax,
         'max_wind_speed': origin_awnd,
-        'chance_of_precipitation': f'{origin_precip}%'
+        'chance_of_precipitation': f'{origin_precip}%',
+        'day time forecast': day_forecast,
+        'night time forecast': night_forecast
+    }
+
+
+# Dependencies and Setup
+import pandas as pd
+import numpy as np
+import requests
+import pprint
+import json
+import re
+
+ 
+
+#define function for 7-day forecast for origin airport
+def destination_fcstfn (flight_date, destination):
+    
+    destination = destination.upper()
+
+    #read in airport codes lat/long file. Source: https://github.com/ip2location/ip2location-iata-icao/blob/master/iata-icao.csv
+    airport_codes = pd.read_csv('data/airport_codes_.csv')
+    ac_df = pd.DataFrame(airport_codes)
+    
+    #look up lat/long for airport codes
+    dest_lat = ac_df.loc[ac_df['iata'] == destination, ['latitude']].iloc[0,0]
+    dest_long = ac_df.loc[ac_df['iata'] == destination, ['longitude']].iloc[0,0]
+    
+    #get weather data. Source: https://weather-gov.github.io/api/general-faqs
+    origin_url = f'https://api.weather.gov/points/{dest_lat},{dest_long}'
+
+    #get 7-day forecast for origin
+    destination_7dresponse = requests.get(destination_url).json()['properties']['forecast']
+    destination_7dforecast = requests.get(destination_7dresponse).json()
+
+    #find max temp for origin airport
+    for i in range(len(destination_7dforecast['properties']['periods'])):
+        start_time = destination_7dforecast['properties']['periods'][i]['startTime']
+        match = re.search(f'^{flight_date}', start_time)
+        daytime = destination_7dforecast['properties']['periods'][i]['isDaytime']
+        if match and daytime == True:
+            destination_tmax = destination_7dforecast['properties']['periods'][i]['temperature']
+
+
+    #find max wind speed for origin airport
+    
+    for i in range(len(destination_7dforecast['properties']['periods'])):
+        start_time = destination_7dforecast['properties']['periods'][i]['startTime']
+        match = re.search(f'^{flight_date}', start_time)
+        daytime = destination_7dforecast['properties']['periods'][i]['isDaytime']
+        if match and daytime == True:
+            try:
+                day_awnd = int(destination_7dforecast['properties']['periods'][i]['windSpeed'].split(' ')[2])
+            except:
+                day_awnd = int(destination_7dforecast['properties']['periods'][i]['windSpeed'].split(' ')[0])
+        else:
+            try:
+                night_awnd = int(destination_7dforecast['properties']['periods'][i]['windSpeed'].split(' ')[2])
+            except:
+                night_awnd = int(destination_7dforecast['properties']['periods'][i]['windSpeed'].split(' ')[0])
+    destination_awnd = max(day_awnd, night_awnd)
+
+    #find chance of precipitation at origination airport
+    for i in range(len(destination_7dforecast['properties']['periods'])):
+        start_time = destination_7dforecast['properties']['periods'][i]['startTime']
+        match = re.search(f'^{flight_date}', start_time)
+        daytime = destination_7dforecast['properties']['periods'][i]['isDaytime']
+        if match and daytime == True:
+            day_precip = destination_7dforecast['properties']['periods'][i]['probabilityOfPrecipitation']['value']
+            if day_precip == None:
+                day_precip = 0
+        else:
+            night_precip = destination_7dforecast['properties']['periods'][i]['probabilityOfPrecipitation']['value']
+            if night_precip == None:
+                night_precip = 0
+    destination_precip = max(day_precip, night_precip)
+
+    #find detailed forecast for origin airport
+    for i in range(len(destination_7dforecast['properties']['periods'])):
+        start_time = destination_7dforecast['properties']['periods'][i]['startTime']
+        match = re.search(f'^{date}', start_time)
+        daytime = destination_7dforecast['properties']['periods'][i]['isDaytime']
+        if match and daytime == True:
+            day_forecast = destination_7dforecast['properties']['periods'][i]['detailedForecast']
+        if match and daytime == False:
+            night_forecast = destination_7dforecast['properties']['periods'][i]['detailedForecast']
+
+
+    return {
+        'max_temp': origin_tmax,
+        'max_wind_speed': origin_awnd,
+        'chance_of_precipitation': f'{origin_precip}%',
+        'day time forecast': day_forecast,
+        'night time forecast': night_forecast
     }

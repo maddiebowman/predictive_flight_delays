@@ -1,13 +1,19 @@
 from flask import Flask, render_template, jsonify, send_from_directory, url_for
 from sqlalchemy import create_engine, text, inspect
-from weather_function import origin_fcstfn #importing function from separate file
+from weather_function import origin_fcstfn, destination_fcstfn #importing function from separate file
 from plane_function import aircraft_age
 from flask_cors import CORS
+
+from datetime import date, datetime
+
 import os
+
 
 app = Flask(__name__)
 engine=create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict', echo=True)
 CORS(app)
+
+today = date.today()
 
 # Setting up homepage that displays the API routes
 @app.route("/")
@@ -82,20 +88,33 @@ def geo_data(offset):
         data_kv = [dict(zip(columns, row)) for row in data]
     return jsonify(data_kv)
 
-@app.route('/weather/<date>/<origination>/')
-def weather(date, origination):
-
-    #example date 2024-07-17; example origination LAX
-    forecast_data = origin_fcstfn(date, origination)
-
-    return jsonify(forecast_data)
 
 
+@app.route('/visualize')
+def show_visuals():
+    return render_template('visualize.html')
 
-@app.route('/plane/<date>/<flight_num>/')
-def plane(date, flight_num):
+#weather at origination
+@app.route('/weather/<flight_date>/<origination>/')
+# Returns the current local date
+def weather(flight_date, origination):
+  
+    try:
+            flight_date_obj = datetime.strptime(flight_date, "%Y-%m-%d").date()
+    except ValueError:
+            return 'Invalid date format. Please use YYYY-MM-DD.', 400
+
+    if flight_date_obj < today:
+        return 'Date is in the past. Please enter a date within a 7-day range.', 400
+    else:
+        forecast_data = origin_fcstfn(flight_date, origination)
+        return jsonify(forecast_data)
+
+
+@app.route('/plane/<flight_date>/<flight_num>/')
+def plane(flight_date, flight_num):
     #example date 2024-07-17; example flight_num wn658
-    plane_data = aircraft_age(date, flight_num)
+    plane_data = aircraft_age(flight_date, flight_num)
 
     return jsonify(plane_data)
 
