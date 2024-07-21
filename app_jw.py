@@ -84,13 +84,44 @@ def get_flight_predict():
 def get_dep_time_block(hour):
     if 0 <= hour < 6:
         return '0001-0559'
-    elif 6 <= hour < 12:
-        return '0600-1159'
-    elif 12 <= hour < 18:
-        return '1200-1759'
-    else:
-        return '1800-2359'
+    elif 6 <= hour < 7:
+        return '0600-0659'
+    elif 7 <= hour < 8:
+        return '0700-0759'
+    elif 8 <= hour < 9:
+        return '0800-0859'
+    elif 9 <= hour < 10:
+        return '0900-0959'
+    elif 10 <= hour < 11:
+        return '1000-1059'
+    elif 11 <= hour < 12:
+        return '1100-1159'
+    elif 12 <= hour < 13:
+        return '1200-1259'
+    elif 13 <= hour < 14:
+        return '1300-1359'
+    elif 14 <= hour < 15:
+        return '1400-1459'
+    elif 15 <= hour < 16:
+        return '1500-1559'
+    elif 16 <= hour < 17:
+        return '1600-1659'
+    elif 17 <= hour < 18:
+        return '1700-1759'
+    elif 18 <= hour < 19:
+        return '1800-1859' 
+    elif 19 <= hour < 20:   
+        return '1900-1959'
+    elif 20 <= hour < 21:
+        return '2000-2059'
+    elif 21 <= hour < 22:
+        return '2100-2159'  
+    elif 22 <= hour < 23:
+        return '2200-2259'
+    else 23 <= hour < 24:
+        return '2300-2359'                     
 
+# Query the database for monthly statistics
 def query_monthly_stats(departing_airport, month, carrier_name):
     # Query for AIRPORT_FLIGHTS_MONTH
     query_airport_flights = text('''
