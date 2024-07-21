@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <title>Flight Data Homepage</title>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ url_for('static', filename='../images/favicon.ico') }}" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='../static/images/favicon.ico') }}" />
     <!-- <a href="https://www.flaticon.com/free-icons/delay" title="delay icons">Delay icons created by Freepik - Flaticon</a>  -->
-    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/index.css') }}">
     <!-- D3 library -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <!-- Chart.js library -->
@@ -22,7 +22,7 @@
         max-width: 800px;
         margin: 0 auto;
         padding: 20px;
-        background: url('../images/clouds.png') no-repeat center center fixed;
+        background: url('../static/images/homepage_background.png') no-repeat center center fixed;
         background-size: cover;
     }
 </style>   
@@ -45,22 +45,34 @@
         <h2>Page Previews</h2>
         <div class="preview-container">
             <div class="preview-item">
-                <img src="../images/flight_predict_dashboard.png" alt="Preview 1">
-                <h3>Flight Dashboard</h3>
+                <a href="{{ url_for('get_flight_predict') }}">
+                <img src="../static/images/preview1.png" alt="Preview 1"></a>
+                <a href="{{ url_for('get_flight_predict') }}">
+                    <h3>Flight Dashboard</h3>
+                </a>
                 <p>Predictive flight delay dashboard that analyzes user inputs to predict the chance of a delay, supported by a trip map and real-time weather features.</p>
             </div>
             <div class="preview-item">
-                <img src="../images/image3.png" alt="Preview 3">
-                <h3>Visualize</h3>
+                <a href="{{ url_for('show_visuals') }}">
+                <img src="../static/images/preview2.png" alt="Preview 2"></a>
+                <a href="{{ url_for('show_visuals') }}">
+                    <h3>Visualize</h3>
+                </a>
                 <p>Static visualizations from jupyter, produced in various languages to support our feature selection, model predictions and final analysis.</p>
             </div>
             <div class="preview-item">
-                <img src="../images/image2.png" alt="Preview 2">
+                <img src="../static/images/preview3.png" alt="Preview 3">
                 <h3>Raw Data</h3>
                 <p>Visit different data endpoints used to power predictions and visuals. <strong> Select:</strong>  Sampled data, all data, or see additional data and APIs.</p>
             </div>
         </div>
     </div>
+</div>
+<!-- GitHub Repository Button -->
+<div class="github-button-container">
+    <a href="https://github.com/maddiebowman/predictive_flight_delays" target="_blank" class="github-button">
+        GitHub Repository
+    </a>
 </div>
 </body>
 </html>

@@ -8,6 +8,7 @@ from datetime import date, datetime
 from api_key import openweather_api
 
 import os
+import psycopg2
 
 
 app = Flask(__name__)
@@ -90,12 +91,6 @@ def geo_data(offset):
         data_kv = [dict(zip(columns, row)) for row in data]
     return jsonify(data_kv)
 
-
-
-@app.route('/visualize')
-def show_visuals():
-    return render_template('visualize.html')
-
 #weather at origination
 @app.route('/weather/<flight_date>/<origination>/')
 
@@ -111,7 +106,7 @@ def weather(flight_date, origination):
     if flight_date_obj < today:
         return 'Date is in the past. Please enter a date within a 7-day range.', 400
     else:
-        forecast_data = origin_fcstfn_2(flight_date, origination)
+        forecast_data = origin_fcstfn(flight_date, origination)
         return jsonify(forecast_data)
 
 #precipitation at origination
@@ -135,11 +130,6 @@ def plane(flight_date, flight_num):
     plane_data = aircraft_age(flight_date, flight_num)
 
     return jsonify(plane_data)
-
-# Ensure images are connected to application through flask
-@app.route('/images/<path:filename>')
-def serve_image(filename):
-    return send_from_directory(os.path.join(app.root_path, 'images'), filename)
 
 if __name__ == '__main__':
     app.run(debug=True)

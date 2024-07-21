@@ -5,49 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historical Visuals</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ url_for('serve_image', filename='favicon.ico') }}">
-    <!-- CSS Style Sheets -->
-    <link rel="stylesheet" href="../static/css/visual.css">
-    
+    <link rel="shortcut icon" href="{{ url_for('static', filename='../static/images/favicon.ico') }}">  
+    <!-- CSS Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/visual.css') }}">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
-    <div id="mySidenav" class="sidenav">
-      <a href="{{ url_for('homepage') }}" id="home">Home</a>
-      <a href="{{ url_for('get_flight_predict') }}" id="predict">Predict</a>
-    </div>
-    <h1>Historical Visualizations</h1>
-    <div class="container">
-        <div class="box">
-            <h2>Airline Carriers Analysis</h2>
-            <div class="image-container">
-                <img src="../images/heatmap_monthlycarrierdelays.png" alt="Monthly Airline Delays">
-                <img src="../images/countplot_carrierdelays.png" alt="Airline Carrier Delay Count">
-            </div>
+    <div class="header">
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <a href="{{ url_for('homepage') }}" class="nav-button" id="home">Home</a>
+            <a href="{{ url_for('get_flight_predict') }}" class="nav-button" id="predict">Predict</a>
         </div>
-        <div class="box">
-            <h2>Airport Congestion</h2>
-            <div class="image-container">
-                <img src="../images/yearly_delayrates_top5airports.png" alt="Peak Travel Times(Yearly)">
-                <img src="../images/heatmap_monthlyairportdelays.png" alt="Heatmap Monthly Airport Delays">
-            </div>
-        </div>
+        <h1>Historical Visualizations</h1>
     </div>
 
     <div class="container">
         <div class="box">
-            <h2>Aircraft Health</h2>
+            <h2>Heatmap of US Airport Traffic (2019)</h2>
             <div class="image-container">
-                <img src="../images/aircraft_analysis1.png" alt="Aircraft Analysis 1">
-                <img src="../images/aircraft_analysis2.png" alt="Aircraft Analysis 2">
+                
             </div>
         </div>
         <div class="box">
-            <h2>Peak Travel Times</h2>
+            <h2>Interactive Map (Monthly Airport Traffic)</h2>
             <div class="image-container">
-                <img src="../images/linechart_hourlydelayrates.png" alt="Delay Rates by Departure Hour">
-                <img src="../images/dayofweek_delayrate.png" alt="Peak Travel Times(Weekly)">
+                
             </div>
         </div>
     </div>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Leaflet Heat Plugin -->
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/visuals.js') }}"></script>
 </body>
 </html>
