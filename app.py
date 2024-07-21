@@ -118,8 +118,9 @@ def get_flight_predict():
                         'awnd': awnd
                         }
         print(results_dict)
-
-    return render_template('dashboard.html')
+        return render_template('dashboard.html', result = results_dict)
+    else: 
+        return render_template('dashboard.html')
 
 def get_dep_time_block(hour):
     if 0 <= hour < 6:
@@ -159,7 +160,12 @@ def get_dep_time_block(hour):
     elif 22 <= hour < 23:
         return '2200-2259'
     else:
-        return '2300-2359'     
+        return '2300-2359'
+    
+
+# @app.route('/features')
+# def show_features():
+
 
 @app.route('/visuals')
 def show_visuals():
