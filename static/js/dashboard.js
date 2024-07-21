@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initializeMap();
 
-  const url = 'https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json';
+  const airportUrl = 'https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json';
   let airportData;
 
-  fetch(url)
+  fetch(airportUrl)
     .then(response => response.json())
     .then(data => {
       airportData = data.filter(airport => {
@@ -25,24 +25,48 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!b.name) return -1;
         return a.name.localeCompare(b.name);
       });
-      populateDatalist('origins', airportData);
-      populateDatalist('destinations', airportData);
+      populateAirportDatalists();
     })
     .catch(error => console.error('Error fetching the airport data:', error));
 
-  function populateDatalist(datalistId, airports) {
+  function populateAirportDatalists() {
+    populateDatalist('origins', airportData);
+    populateDatalist('destinations', airportData);
+  }
+
+  function populateDatalist(datalistId, items) {
     const datalist = document.getElementById(datalistId);
     if (datalist) {
       datalist.innerHTML = '';
-      airports.forEach(airport => {
+      items.forEach(item => {
         const option = document.createElement('option');
-        option.value = `${airport.name} (${airport.code})`;
+        option.value = `${item.name} (${item.code})`;
         datalist.appendChild(option);
       });
     } else {
       console.error(`Datalist with ID ${datalistId} not found`);
     }
   }
+
+  function fetchAirlines() {
+    fetch('/data_test/0')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Extract unique airline names
+        const airlineData = [...new Set(data.map(flight => flight.CARRIER_NAME))];
+        airlineData.sort();
+        populateDatalist('airlines', airlineData, airline => airline);
+      })
+      .catch(error => console.error('Error fetching airlines:', error));
+  }
+
+  // Call fetchAirlines after airport data has been populated
+  fetchAirlines();
 
   function createPopupContent(airport, forecastData) {
     return `
@@ -51,6 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="airport-location">${airport.city}, ${airport.state}</div>
         <h4>Weather Forecast</h4>
         <div class="weather-details">
+        <div class="weather-row">
+            <span class="weather-label"Day Time Forecast:</span>
+            <strong class="weather-forecast-day">Daily Forecast: ${forecastData.day_time_forecast}</strong>
+          </div>
           <div class="weather-row">
             <span class="weather-label">Chance of Precipitation:</span>
             <strong class="weather-value">${forecastData.chance_of_precipitation}</strong>
@@ -62,6 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="weather-row">
             <span class="weather-label">Max Wind Speed:</span>
             <strong class="weather-value">${forecastData.max_wind_speed} mph</strong>
+          </div>
+          <div class="weather-row">
+            <span class="weather-label"Night Time Forecast:</span>
+            <strong class="weather-forecast-night">Nightly Forecast: ${forecastData.night_time_forecast}</strong>
           </div>
         </div>
       </div>
@@ -157,11 +189,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const originInput = document.getElementById('origin').value;
     const destinationInput = document.getElementById('destination').value;
+    const airlineInput = document.getElementById('airline').value;
     const departureTime = document.getElementById('departureTime').value;
 
     const originCode = originInput.split('(').pop().slice(0, -1);
     const destinationCode = destinationInput.split('(').pop().slice(0, -1);
-
+    const airlineName = airlineInput.trim();
     const origin = airportData.find(airport => airport.code === originCode);
     const destination = airportData.find(airport => airport.code === destinationCode);
 

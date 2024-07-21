@@ -178,9 +178,25 @@ body {
 .popup-content .weather-value {
   flex-shrink: 0;
   text-align: right;
-  margin-left: 10px;
+  margin-left: 11px;
   color: #e74c3c;
   font-size: 14px;
+}
+
+.popup-content .weather-forecast-night {
+  flex-shrink: 0;
+  color: #5026e9;
+  font-size: 10px;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.popup-content .weather-forecast-day {
+  flex-shrink: 0;
+  color: #fe9b07;
+  font-size: 10px;
+  text-align: left;
+  margin-bottom: 8px;
 }
 
 .transparent-icon {

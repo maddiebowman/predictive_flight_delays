@@ -86,8 +86,8 @@ def origin_fcstfn (flight_date, origination):
         'max_temp': origin_tmax,
         'max_wind_speed': origin_awnd,
         'chance_of_precipitation': f'{origin_precip}%',
-        'day time forecast': day_forecast,
-        'night time forecast': night_forecast
+        'day_time_forecast': day_forecast,
+        'night_time_forecast': night_forecast
     }
 
 

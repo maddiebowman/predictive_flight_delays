@@ -8,6 +8,7 @@ from datetime import date, datetime
 from api_key import openweather_api
 
 import os
+import psycopg2
 
 
 app = Flask(__name__)
@@ -105,7 +106,7 @@ def weather(flight_date, origination):
     if flight_date_obj < today:
         return 'Date is in the past. Please enter a date within a 7-day range.', 400
     else:
-        forecast_data = origin_fcstfn_2(flight_date, origination)
+        forecast_data = origin_fcstfn(flight_date, origination)
         return jsonify(forecast_data)
 
 #precipitation at origination
