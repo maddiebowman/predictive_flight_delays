@@ -212,7 +212,7 @@ def precip_fn(flight_date, origin_airport):
         else:
             precip_in = precip_in + 0
     return {
-        'precipitation': f'{precip_in} in.'
+        'precipitation': precip_in
     }
 
 
