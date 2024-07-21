@@ -2,6 +2,8 @@ import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
 import gdown
+import zipfile
+import os
 
 # Database credentials
 db_user = "postgres"
@@ -45,12 +47,26 @@ def populate_database(db_name, csv_file, table_name):
     # Close the connection
     conn.close()
 
+# Function to unzip a file and return the path to the CSV file
+def unzip_file(zip_file, extract_to):
+    with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+        for file in zip_ref.namelist():
+            if file.endswith('.csv'):
+                zip_ref.extract(file, extract_to)
+                return os.path.join(extract_to, file)
+    raise ValueError("No CSV file found in the ZIP archive")
+
 # Create both databases
 create_database("flightpredict")
 create_database("flightpredict_sample")
 
+# Unzip the CSV file and get the CSV file path
+zip_file_path = 'data/full_data_flightdelay.csv.zip'
+extract_to_path = 'data'
+csv_file_path = unzip_file(zip_file_path, extract_to_path)
+
 # Populate the first database
-populate_database("flightpredict", 'data/full_data_flightdelay.csv', 'flight')
+populate_database("flightpredict", csv_file_path, 'flight')
 
 # Download the file for the second database
 file_id = '1WClX4TtAVny-bz7AI1VNrqeGlnzyXiam'
