@@ -24,6 +24,7 @@ model = joblib.load("trained_modules/tf_1.0.pkl")
 scaler = joblib.load("trained_modules/standard_scaler.pkl")
 encoder = joblib.load("trained_modules/label_encoder.pkl")
 
+
 # Returns the current local date
 today = date.today()
 
@@ -213,7 +214,8 @@ def get_dep_time_block(hour):
         return '2200-2259'
     else:
         return '2300-2359'
-    
+
+
 @app.route('/predict', methods = ['GET', 'POST'])
 def get_flight_predict():
     
@@ -257,12 +259,11 @@ def get_flight_predict():
 
         result = f"The likelihood of flight delay is {delay_percentage:.2f}%"
 
-        return jsonify({'result': result})
+        return render_template('dashboard.html', template_result=result)
 
     else: 
         return render_template('dashboard.html')
     
-
 
 @app.route('/visuals')
 def show_visuals():
