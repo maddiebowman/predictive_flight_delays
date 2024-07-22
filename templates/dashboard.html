@@ -48,7 +48,7 @@
         <button type="submit" onclick="sendData()">Submit</button>
       </div>
     </form>
-    <div id="result">{{template_result}}</div>
+    <div id="result"></div>
     <p class="disclaimer">*Flight delays are based on a predictive machine learning model, trained on historical weather and flight data from 2019. Output predictions may not be 100% accurate.</p>
   </div>
   <div id="map"></div>
@@ -74,6 +74,7 @@
         success: function(response) {
           document.getElementById('result').innerHTML = response.result;
         },
+    
         error: function(error) {
           console.log(error);
         }

@@ -11,12 +11,18 @@ import pandas as pd
 import tensorflow as tf
 import os
 import psycopg2
+import joblib
+import pickle
 
 
 app = Flask(__name__)
 engine=create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict', echo=True)
 CORS(app)
 
+# Load the pre-trained model, scaler, and encoder
+model = joblib.load("trained_modules/tf_1.0.pkl")
+scaler = joblib.load("trained_modules/standard_scaler.pkl")
+encoder = joblib.load("trained_modules/label_encoder.pkl")
 
 # Returns the current local date
 today = date.today()
@@ -49,78 +55,124 @@ def homepage():
     # # if GET
     # return render_template('index.html', available_routes=available_routes)
 
-@app.route('/predict', methods = ['GET', 'POST'])
-def get_flight_predict():
-    
-    if request.method == 'POST':
-        response = request.get_data()
-        decoded_string = response.decode('utf-8')
+    # step 1 - get data from form
+    # step 2 - get data from DB
+    # step 3 - combine data + preprocess data for ML
+    # step 4 - model.predict(input)
+    # return result
 
-        # #Parse the JSON string into a Python dictionary
-        #example: {'origin': 'Air Force Plant Nr 42 Palmdale (PMD)', 'destination': 'Akron Canton Regional Airport (CAK)', 'airline': 'Delta', 'departureTime': '2024-07-24T00:08'}
+# helper functions
+def split_airport_string(airport_string):
+# Find the position of the opening parenthesis
+    open_paren_pos = airport_string.find('(')
+            
+    # Find the position of the closing parenthesis
+    close_paren_pos = airport_string.find(')')
+            
+    if open_paren_pos != -1 and close_paren_pos != -1:
+        # Extract the name and code using slicing
+        name = airport_string[:open_paren_pos].strip()
+        code = airport_string[open_paren_pos + 1:close_paren_pos].strip()
+        return name, code
+    else:
+        return None, None
+
+def get_flight_data(): 
+    response = request.get_data()
+    decoded_string = response.decode('utf-8')
+
+    # #Parse the JSON string into a Python dictionary
+    #example: {'origin': 'Air Force Plant Nr 42 Palmdale (PMD)', 'destination': 'Akron Canton Regional Airport (CAK)', 'airline': 'Delta', 'departureTime': '2024-07-24T00:08'}
+    try:
         data = json.loads(decoded_string)
+    except json.JSONDecodeError as e:
+        return jsonify({'error': 'Invalid JSON'}), 400
+        
+    #extract data from parsed JSON
+    o_airport_string = data['origin']
+    d_airport_string = data['destination']
+    carrier_name = data['airline']
+    flight_date_time = data['departureTime']
 
-        #getting airport
-        o_airport_string = data['origin']
-        d_airport_string = data['destination']
-        def split_airport_string(airport_string):
-        # Find the position of the opening parenthesis
-            open_paren_pos = airport_string.find('(')
-            
-            # Find the position of the closing parenthesis
-            close_paren_pos = airport_string.find(')')
-            
-            if open_paren_pos != -1 and close_paren_pos != -1:
-                # Extract the name and code using slicing
-                name = airport_string[:open_paren_pos].strip()
-                code = airport_string[open_paren_pos + 1:close_paren_pos].strip()
-                return name, code
-            else:
-                return None, None
-            
-        # get origin
-        origin_airport, origination  = split_airport_string(o_airport_string)
-        # get destination
-        departing_airport, depart_code = split_airport_string(d_airport_string)
+    # get origin
+    origin_airport, origination  = split_airport_string(o_airport_string)
+    # get destination
+    destination_airport, dest_code = split_airport_string(d_airport_string)
 
-        #get flight_date and convert departure time to datetime and extract features
-        flight_date_time = data['departureTime']
-        flight_date = datetime.strptime(flight_date_time, '%Y-%m-%dT%H:%M').date()
-        month = flight_date.month
-        day_of_week = flight_date.weekday() + 1 # Monday is 0 in Python, but 1 in our feature
-        dep_time_blk = get_dep_time_block(datetime.strptime(flight_date_time, '%Y-%m-%dT%H:%M').hour)
+    #convert departure time to datetime and extract features
+    flight_date = datetime.strptime(flight_date_time, '%Y-%m-%dT%H:%M').date()
+    month = flight_date.month
+    day_of_week = flight_date.weekday() + 1 # Monday is 0 in Python, but 1 in our feature
+    dep_time_blk = get_dep_time_block(datetime.strptime(flight_date_time, '%Y-%m-%dT%H:%M').hour)
 
-        #get airline
-        carrier_name = data['airline']
+    #get precipitation
+    #example: {'precipitation': 0}
+    precipitation_data = precip_fn(flight_date, origin_airport)
+    prcp = precipitation_data['precipitation']
 
-        #get precipitation
-        #example: {'precipitation': 0}
-        precipitation_data = precip_fn(flight_date, origin_airport)
-        prcp = precipitation_data['precipitation']
+    #get tmax, awnd, and % precipitation
+     #example: {'max_temp': 107, 'max_wind_speed': 20, 'chance_of_precipitation': '0%', 'day_time_forecast': 'Sunny, with a high near 107.', 'night_time_forecast': 'Mostly clear, with a low around 77.'}
+    forecast_data = origin_fcstfn(flight_date, origination)
+    tmax = forecast_data['max_temp']
+    awnd = forecast_data['max_wind_speed']
 
-        #get tmax, awnd, and % precipitation
-        #example: {'max_temp': 107, 'max_wind_speed': 20, 'chance_of_precipitation': '0%', 'day_time_forecast': 'Sunny, with a high near 107.', 'night_time_forecast': 'Mostly clear, with a low around 77.'}
-        forecast_data = origin_fcstfn(flight_date, origination)
-        tmax = forecast_data['max_temp']
-        awnd = forecast_data['max_wind_speed']
-
-        #check resulting variables by printing
-        results_dict = {'origin_airport': origin_airport,
-                        'origination': origination,
-                        'departing_airport': departing_airport,
-                        'flight_date': flight_date,
-                        'month': month,
-                        'day_of_week': day_of_week,
-                        'dep_time_blk': dep_time_blk,
-                        'carrier_name': carrier_name,
-                        'prcp': prcp,
-                        'tmax': tmax,
-                        'awnd': awnd
+    input_dict = {'origin_airport': origin_airport,
+                    'origination': origination,
+                    'destination_airport': destination_airport,
+                    'flight_date': flight_date,
+                    'month': month,
+                    'day_of_week': day_of_week,
+                    'dep_time_blk': dep_time_blk,
+                    'carrier_name': carrier_name,
+                    'prcp': prcp,
+                    'tmax': tmax,
+                    'awnd': awnd,
                         }
-        print(results_dict)
-        return render_template('dashboard.html', result = results_dict)
-    else: 
-        return render_template('dashboard.html')
+
+    return input_dict 
+
+# Data preparation for prediction
+def dataprep(user_data):
+    user_data['ENCODED_DEP_TIME_BLK'] = encoder.transform(user_data['ENCODED_DEP_TIME_BLK'])
+    user_data = scaler.transform(user_data)
+    return user_data
+
+#query database for monthly statistics
+def query_monthly_stats(origin_airport, month, carrier_name):
+
+    # Extract the first two words from the departing airport string
+    origin_airport_words = ' '.join(origin_airport.split()[:2])
+    airline_word = ' '.join(carrier_name.split()[:1])
+
+    query_airport_flights = text('''
+        SELECT AVG("AIRPORT_FLIGHTS_MONTH") as AIRPORT_FLIGHTS_MONTH
+        FROM flight
+        WHERE "DEPARTING_AIRPORT" LIKE :departing_airport AND "MONTH" = :month
+    ''')
+    
+    query_airline_flights = text('''
+        SELECT AVG("AIRLINE_FLIGHTS_MONTH") as AIRLINE_FLIGHTS_MONTH
+        FROM flight
+        WHERE "CARRIER_NAME" LIKE :carrier_name AND "MONTH" = :month
+    ''')
+    
+    query_airline_airport_flights = text('''
+        SELECT AVG("AIRLINE_AIRPORT_FLIGHTS_MONTH") as AIRLINE_AIRPORT_FLIGHTS_MONTH
+        FROM flight
+        WHERE "DEPARTING_AIRPORT" LIKE :departing_airport AND "CARRIER_NAME" LIKE :carrier_name AND "MONTH" = :month
+    ''')
+
+    conn = engine.connect()
+    result_airport_flights = conn.execute(query_airport_flights, {'departing_airport': f'%{origin_airport_words}%', 'month':month}).fetchone()
+    result_airline_flights = conn.execute(query_airline_flights, {'carrier_name': f'%{airline_word}%', 'month': month}).fetchone()
+    result_airline_airport_flights = conn.execute(query_airline_airport_flights, {'departing_airport': f'%{origin_airport_words}%', 'carrier_name': f'%{airline_word}%', 'month': month}).fetchone()
+    conn.close()
+
+    return (
+        result_airport_flights[0], 
+        result_airline_flights[0], 
+        result_airline_airport_flights[0]
+    )
 
 def get_dep_time_block(hour):
     if 0 <= hour < 6:
@@ -162,9 +214,54 @@ def get_dep_time_block(hour):
     else:
         return '2300-2359'
     
+@app.route('/predict', methods = ['GET', 'POST'])
+def get_flight_predict():
+    
+    if request.method == 'POST':
+        #get input data from function
+        flight_data = get_flight_data()
+        origin_airport = flight_data['origin_airport']
+        month = flight_data['month']
+        carrier_name = flight_data['carrier_name']
+        day_of_week = flight_data['day_of_week']
+        tmax = flight_data['tmax']
+        awnd = flight_data['awnd']
+        prcp = flight_data['prcp']
+        dep_time_blk = flight_data['dep_time_blk']
 
-# @app.route('/features')
-# def show_features():
+        #query monthly data from database
+        airport_flights_month, airline_flights_month, airline_airport_flights_month = query_monthly_stats(origin_airport, month, carrier_name)
+
+
+        # Prepare the input data for prediction
+        features = ['MONTH', 'DAY_OF_WEEK', 'TMAX', 'AWND', 'AIRPORT_FLIGHTS_MONTH',
+       'AIRLINE_FLIGHTS_MONTH', 'AIRLINE_AIRPORT_FLIGHTS_MONTH', 'PRCP',
+       'ENCODED_DEP_TIME_BLK']
+
+        input_data = pd.DataFrame([[
+            month,
+            day_of_week,
+            tmax,
+            awnd,
+            airport_flights_month,
+            airline_flights_month,
+            airline_airport_flights_month,
+            prcp,
+            dep_time_blk
+        ]], columns=features)
+
+
+        prepped_data = dataprep(input_data)
+        prediction_result = model.predict(prepped_data) * 100
+        delay_percentage = prediction_result[0][0]  # Get the percentage value
+
+        result = f"The likelihood of flight delay is {delay_percentage:.2f}%"
+
+        return jsonify({'result': result})
+
+    else: 
+        return render_template('dashboard.html')
+    
 
 
 @app.route('/visuals')

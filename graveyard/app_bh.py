@@ -62,7 +62,7 @@ def homepage():
     # step 4 - model.predict(input)
     # return result
 
-    # helper functions
+# helper functions
 def split_airport_string(airport_string):
 # Find the position of the opening parenthesis
     open_paren_pos = airport_string.find('(')
