@@ -56,12 +56,22 @@ def homepage():
     # # if GET
     # return render_template('index.html', available_routes=available_routes)
 
+def get_flight_data(): 
+    return {}
+
+
+
 @app.route('/predict', methods = ['GET', 'POST'])
 def get_flight_predict():
     
     if request.method == 'POST':
         response = request.get_data()
         decoded_string = response.decode('utf-8')
+        # step 1 - get data from form
+        # step 2 - get data from DB
+        # step 3 - combine data + preprocess data for ML
+        # step 4 - model.predict(input)
+        # return result
 
         # #Parse the JSON string into a Python dictionary
         #example: {'origin': 'Air Force Plant Nr 42 Palmdale (PMD)', 'destination': 'Akron Canton Regional Airport (CAK)', 'airline': 'Delta', 'departureTime': '2024-07-24T00:08'}
@@ -77,6 +87,7 @@ def get_flight_predict():
         flight_date_time = data['departureTime']
 
         def split_airport_string(airport_string):
+        # helper functions
         # Find the position of the opening parenthesis
             open_paren_pos = airport_string.find('(')
             
@@ -101,7 +112,6 @@ def get_flight_predict():
         month = flight_date.month
         day_of_week = flight_date.weekday() + 1 # Monday is 0 in Python, but 1 in our feature
         dep_time_blk = get_dep_time_block(datetime.strptime(flight_date_time, '%Y-%m-%dT%H:%M').hour)
-
 
         #get precipitation
         #example: {'precipitation': 0}
@@ -163,7 +173,7 @@ def get_flight_predict():
 
         result = "Flight will be delayed" if prediction == 1 else "Flight will not be delayed"
 
-        return render_template('dashboard.html',{"prediction": result})
+        return render_template('dashboard.html', template_result={"prediction": result})
 
     else: 
         return render_template('dashboard.html')
@@ -204,9 +214,6 @@ def query_monthly_stats(origin_airport, month, carrier_name):
         result_airline_flights[0], 
         result_airline_airport_flights[0]
     )
-
-
-
 
 def get_dep_time_block(hour):
     if 0 <= hour < 6:
