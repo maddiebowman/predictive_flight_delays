@@ -305,7 +305,9 @@ def get_data():
 #BH Test. determine which columns we need to query
 #delay y/n, airport code, lat, long, airline
 
+
 @app.route('/chart/<int:offset>')
+
 def geo_data(offset):
     offset = offset * 100000
     conn = psycopg2.connect(
@@ -317,8 +319,12 @@ def geo_data(offset):
     )
     with conn.cursor() as cur:
         query = '''
-                SELECT "LATITUDE", "LONGITUDE", "DEP_DEL15", "CARRIER_NAME", "DEP_TIME_BLK", "DAY_OF_WEEK", "MONTH"
+                SELECT "DEPARTING_AIRPORT", "LATITUDE", "LONGITUDE", 
+                SUM("DEP_DEL15")::INTEGER AS TOT_DELAYS, 
+                COUNT("DEP_DEL15") AS TOTAL_FLIGHTS, 
+                ROUND(100 * (SUM("DEP_DEL15")::NUMERIC / COUNT("DEP_DEL15")::NUMERIC), 2)::FLOAT AS DELAY_RATE
                 FROM flight
+                GROUP BY "DEPARTING_AIRPORT", "LATITUDE", "LONGITUDE"
                 LIMIT 100000 
                 OFFSET %s
                 '''
@@ -328,6 +334,32 @@ def geo_data(offset):
         data_kv = [dict(zip(columns, row)) for row in data]
     return jsonify(data_kv)
 
+@app.route('/chart/<int:offset>')
+def chart_data(offset):
+    offset = offset * 100000
+    conn = psycopg2.connect(
+        dbname="flightpredict",
+        user="postgres",
+        password="postgres",
+        host="localhost",
+        port="5432"
+    )
+    with conn.cursor() as cur:
+        query = '''
+                SELECT "DAY_OF_WEEK", "DEP_TIME_BLK",
+                SUM("DEP_DEL15")::INTEGER AS TOT_DELAYS, 
+                COUNT("DEP_DEL15") AS TOTAL_FLIGHTS 
+                FROM flight
+                GROUP BY "DAY_OF_WEEK", "DEP_TIME_BLK"
+                LIMIT 100000 
+                OFFSET %s
+                '''
+        cur.execute(query, (offset,))
+        data = cur.fetchall()
+        columns = [desc[0] for desc in cur.description]
+        data_kv = [dict(zip(columns, row)) for row in data]
+
+    return jsonify(data_kv)
 #endpoints for sql queries: 2019 delays per weather condition
 @app.route('/2019_delay_tmax')
 def hist_tmax_delays():

@@ -10,7 +10,7 @@ var streetmap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 
 streetmap.addTo(map);
 
-d3.json("http://127.0.0.1:5000/test/0").then(data => {
+d3.json("http://127.0.0.1:5000/map/0").then(data => {
 
   var coords = []
 

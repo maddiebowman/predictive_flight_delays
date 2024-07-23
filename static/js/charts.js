@@ -28,7 +28,7 @@ var variableOptions = {"Day of Week": "DAY_OF_WEEK",
 
 
 
-d3.json("http://127.0.0.1:5000/test2/0").then(data => {
+d3.json("http://127.0.0.1:5000/chart/0").then(data => {
   function createWeeklyChartData(dayOfWk) {
     data.forEach(date_time => {
       if (date_time.DAY_OF_WEEK == dayOfWk) {
