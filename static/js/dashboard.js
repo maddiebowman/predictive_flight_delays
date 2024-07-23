@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   let myMap;
+
   function initializeMap() {
     if (!myMap) {
       myMap = L.map('map').setView([48, -109], 4);
@@ -8,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }).addTo(myMap);
     }
   }
+  
   initializeMap();
 
   const airportUrl = 'https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json';
@@ -37,134 +39,148 @@ document.addEventListener('DOMContentLoaded', () => {
   function populateDatalist(datalistId, items) {
     const datalist = document.getElementById(datalistId);
     if (datalist) {
-      datalist.innerHTML = '';
-      items.forEach(item => {
-        const option = document.createElement('option');
-        option.value = `${item.name} (${item.code})`;
-        datalist.appendChild(option);
-      });
+        datalist.innerHTML = '';
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = `${item.name} (${item.code})`;
+            datalist.appendChild(option);
+        });
     } else {
-      console.error(`Datalist with ID ${datalistId} not found`);
+        console.error(`Datalist with ID ${datalistId} not found`);
     }
-  }
+}
 
-  function fetchAirlines() {
-    fetch('/data_test/0')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        // Extract unique airline names
-        const airlineData = [...new Set(data.map(flight => flight.CARRIER_NAME))];
-        airlineData.sort();
-        populateDatalist('airlines', airlineData, airline => airline);
-      })
-      .catch(error => console.error('Error fetching airlines:', error));
-  }
+  // Manually populate the airline dropdown
+  const airlines = [
+    'Alaska', 'Allegiant Air', 'American Airlines', 'American Eagle Airlines', 
+    'Atlantic Southeast Airlines', 'Comair', 'Delta', 'Endeavor Air', 'Frontier', 
+    'Hawaiian Airlines', 'JetBlue', 'Mesa Airlines', 'Midwest Airline', 
+    'SkyWest Airlines', 'Southwest', 'Spirit', 'United'
+  ];
 
-  // Call fetchAirlines after airport data has been populated
-  fetchAirlines();
+  const airlineDatalist = document.getElementById('airlines');
+  airlines.forEach(airline => {
+    const option = document.createElement('option');
+    option.value = airline;
+    airlineDatalist.appendChild(option);
+  });
 
   function createPopupContent(airport, forecastData) {
     return `
       <div class="popup-content">
         <div class="airport-name">${airport.name}</div>
         <div class="airport-location">${airport.city}, ${airport.state}</div>
-        <h4>Weather Forecast</h4>
-        <div class="weather-details">
-        <div class="weather-row">
-            <span class="weather-label"Day Time Forecast:</span>
-            <strong class="weather-forecast-day">Daily Forecast: ${forecastData.day_time_forecast}</strong>
+        <hr color="black" size="1">
+        <div class="weather-container">
+          <h4>Weather Forecast</h4>
+          <div class="daily-forecast-container">
+            <div class="icon-label-container">
+              <img src="/static/images/day_icon.png" alt="Day Icon" class="forecast-icon">
+              <span class="daily-forecast-label">Daily Forecast</span>
+            </div>
+            <div id="daily-forecast-${airport.code}" class="weather-forecast hidden">
+              ${forecastData.day_time_forecast}
+            </div>
           </div>
-          <div class="weather-row">
-            <span class="weather-label">Chance of Precipitation:</span>
-            <strong class="weather-value">${forecastData.chance_of_precipitation}</strong>
+          <div class="nightly-forecast-container">
+            <div class="icon-label-container">
+              <img src="/static/images/night_icon.png" alt="Night Icon" class="forecast-icon">
+              <span class="nightly-forecast-label">Nightly Forecast</span>
+            </div>
+            <div id="nightly-forecast-${airport.code}" class="weather-forecast hidden">
+              ${forecastData.night_time_forecast}
+            </div>
           </div>
-          <div class="weather-row">
-            <span class="weather-label">Max Temperature:</span>
-            <strong class="weather-value">${forecastData.max_temp}°F</strong>
-          </div>
-          <div class="weather-row">
-            <span class="weather-label">Max Wind Speed:</span>
-            <strong class="weather-value">${forecastData.max_wind_speed} mph</strong>
-          </div>
-          <div class="weather-row">
-            <span class="weather-label"Night Time Forecast:</span>
-            <strong class="weather-forecast-night">Nightly Forecast: ${forecastData.night_time_forecast}</strong>
+          <button class="toggle-button" data-target="weather-details-${airport.code}">Show Weather Details</button>
+          <div id="weather-details-${airport.code}" class="weather-details hidden">
+            <div class="weather-row">
+              <span class="weather-label">Chance of Precipitation:</span>
+              <span class="weather-value">${forecastData.chance_of_precipitation}</span>
+            </div>
+            <div class="weather-row">
+              <span class="weather-label">Max Temperature:</span>
+              <span class="weather-value">${forecastData.max_temp}°F</span>
+            </div>
+            <div class="weather-row">
+              <span class="weather-label">Max Wind Speed:</span>
+              <span class="weather-value">${forecastData.max_wind_speed} mph</span>
+            </div>
           </div>
         </div>
       </div>
     `;
-  }
+    }
 
-  const TransparentOriginIcon = L.Icon.extend({options: {
-    iconUrl: '/static/images/origin_marker.png',
-    iconSize: [50, 50],
-    iconAnchor: [25, 50],
-    popupAnchor: [0, -50],
-    className: 'transparent-icon'
-  },
-  createIcon: function (oldIcon) {
-    const img = L.Icon.prototype.createIcon.call(this, oldIcon);
-    img.style.backgroundColor = 'transparent';
-    return img;
-  }
-});
+  const TransparentOriginIcon = L.Icon.extend({
+    options: {
+      iconUrl: '/static/images/origin_marker.png',
+      iconSize: [50, 50],
+      iconAnchor: [25, 50],
+      popupAnchor: [0, -50],
+      className: 'transparent-icon'
+    },
+    createIcon: function (oldIcon) {
+      const img = L.Icon.prototype.createIcon.call(this, oldIcon);
+      img.style.backgroundColor = 'transparent';
+      return img;
+    }
+  });
 
-  const TransparentDestinationIcon = L.Icon.extend({options: {
-    iconUrl: '/static/images/destination_marker.png',
-    iconSize: [50, 50],
-    iconAnchor: [25, 50],
-    popupAnchor: [0, -50],
-    className: 'transparent-icon'
-  },
-  createIcon: function (oldIcon) {
-    const img = L.Icon.prototype.createIcon.call(this, oldIcon);
-    img.style.backgroundColor = 'transparent';
-    return img;
-  }
-});
-  
+  const TransparentDestinationIcon = L.Icon.extend({
+    options: {
+      iconUrl: '/static/images/destination_marker.png',
+      iconSize: [50, 50],
+      iconAnchor: [25, 50],
+      popupAnchor: [0, -50],
+      className: 'transparent-icon'
+    },
+    createIcon: function (oldIcon) {
+      const img = L.Icon.prototype.createIcon.call(this, oldIcon);
+      img.style.backgroundColor = 'transparent';
+      return img;
+    }
+  });
+
   const originIcon = new TransparentOriginIcon();
   const destinationIcon = new TransparentDestinationIcon();
 
   function drawFlightPath(origin, destination, originForecast, destinationForecast) {
     console.log("Drawing flight path");
     console.log("Origin", origin);
-    console.log("Desstination", destination);
+    console.log("Destination", destination);
 
     myMap.eachLayer((layer) => {
       if (layer instanceof L.Polyline || layer instanceof L.Marker) {
         myMap.removeLayer(layer);
       }
     });
-  
+
     const originCoords = [parseFloat(origin.lat), parseFloat(origin.lon)];
     const destCoords = [parseFloat(destination.lat), parseFloat(destination.lon)];
 
     console.log("Origin Coordinates:", originCoords);
     console.log("Destination Coordinates:", destCoords);
-  
+
     L.polyline([originCoords, destCoords], { color: 'red', weight: 3, dashArray: '10, 10' }).addTo(myMap);
-  
+
     const originPopupContent = originForecast ? createPopupContent(origin, originForecast) : `<div class="popup-content"><p>Forecast unavailable for ${origin.name}</p></div>`;
     const destPopupContent = destinationForecast ? createPopupContent(destination, destinationForecast) : `<div class="popup-content"><p>Forecast unavailable for ${destination.name}</p></div>`;
-  
+
     L.marker(originCoords, { icon: originIcon, title: origin.name })
       .bindPopup(originPopupContent)
       .addTo(myMap)
       .openPopup();
-  
+
     L.marker(destCoords, { icon: destinationIcon, title: destination.name })
       .bindPopup(destPopupContent)
       .addTo(myMap)
       .openPopup();
-  
+
     const bounds = L.latLngBounds([originCoords, destCoords]);
-    myMap.fitBounds(bounds, { padding: [50, 50] });
+    myMap.fitBounds(bounds, { padding: [75, 75] });
+
+    // Call the toggle function to initialize
+    initializeWeatherToggle();
   }
 
   function getForecast(date, airportCode) {
@@ -182,6 +198,28 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Error fetching forecast:', error);
         throw error;
       });
+  }
+
+  function initializeWeatherToggle() {
+    // Get all toggle buttons
+    const toggleButtons = document.querySelectorAll('.toggle-button');
+
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-target');
+        const weatherDetails = document.getElementById(targetId);
+
+        if (weatherDetails.classList.contains('hidden')) {
+          weatherDetails.classList.remove('hidden');
+          weatherDetails.classList.add('visible');
+          this.textContent = 'Hide';
+        } else {
+          weatherDetails.classList.remove('visible');
+          weatherDetails.classList.add('hidden');
+          this.textContent = 'Show Weather Details';
+        }
+      });
+    });
   }
 
   document.getElementById('flightForm').addEventListener('submit', function (event) {

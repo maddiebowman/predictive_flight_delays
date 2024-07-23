@@ -91,8 +91,8 @@ p {
 }
 
 .github-button {
-    background-color: #24292e;
-    color: white;
+    background-color: #e4f1ff;
+    color: rgb(16, 16, 16);
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
@@ -102,5 +102,5 @@ p {
 }
 
 .github-button:hover {
-    background-color: #1a1e22;
+    background-color: #91d3f4;
 }
