@@ -331,7 +331,7 @@ def geo_data(offset):
 @app.route('/2019_delay_tmax')
 def hist_tmax_delays():
     conn = psycopg2.connect(
-        dbname="flightpredict",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
@@ -378,7 +378,7 @@ def hist_tmax_delays():
 @app.route('/2019_delay_awnd')
 def hist_awnd_delays():
     conn = psycopg2.connect(
-        dbname="flightpredict",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
@@ -408,7 +408,7 @@ def hist_awnd_delays():
 @app.route('/2019_delay_prcp')
 def hist_prcp_delays():
     conn = psycopg2.connect(
-        dbname="flightpredict",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
