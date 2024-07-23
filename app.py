@@ -20,9 +20,10 @@ app = Flask(__name__)
 # Function to check if a database exists
 def database_exists(engine, database_name):
     try:
-        # Try connecting to the database
-        result = engine.execute(f"SELECT 1 FROM pg_database WHERE datname='{database_name}'")
-        return result.fetchone() is not None
+        # Use a Connection to execute the query
+        with engine.connect() as connection:
+            result = connection.execute(text(f"SELECT 1 FROM pg_database WHERE datname='{database_name}'"))
+            return result.fetchone() is not None
     except OperationalError:
         return False
 
@@ -331,7 +332,7 @@ def geo_data(offset):
 @app.route('/2019_delay_tmax')
 def hist_tmax_delays():
     conn = psycopg2.connect(
-        dbname="flightpredict",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
@@ -378,7 +379,7 @@ def hist_tmax_delays():
 @app.route('/2019_delay_awnd')
 def hist_awnd_delays():
     conn = psycopg2.connect(
-        dbname="flightpredict",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
@@ -408,7 +409,7 @@ def hist_awnd_delays():
 @app.route('/2019_delay_prcp')
 def hist_prcp_delays():
     conn = psycopg2.connect(
-        dbname="flightpredict",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
