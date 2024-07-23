@@ -1,5 +1,3 @@
-#!pip install gdown
-
 import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
@@ -58,13 +56,14 @@ def unzip_file(zip_file, extract_to):
                 return os.path.join(extract_to, file)
     raise ValueError("No CSV file found in the ZIP archive")
 
-# Create both databases
-create_database("flightpredict")
+# Create databases
+create_database("flightpredict_sample")
 
-# Unzip the CSV file and get the CSV file path
-zip_file_path = 'data/full_data_flightdelay.csv.zip'
-extract_to_path = 'data'
-csv_file_path = unzip_file(zip_file_path, extract_to_path)
+# Download the file for the database
+file_id = '1WClX4TtAVny-bz7AI1VNrqeGlnzyXiam'
+url = f'https://drive.google.com/uc?id={file_id}'
+output = 'sampled_data_full_nl.csv'
+gdown.download(url, output, quiet=False)
 
-# Populate the first database
-populate_database("flightpredict", csv_file_path, 'flight')
+# Populate the database
+populate_database("flightpredict_sample", output, 'flight')
