@@ -14,7 +14,26 @@ import psycopg2
 
 
 app = Flask(__name__)
-engine=create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict', echo=True)
+
+#Looks for sample database if full database does not exist
+def database_exists(engine, database_name):
+    try:
+        # Try connecting to the database
+        engine.execute(f"SELECT 1 FROM pg_database WHERE datname='{database_name}'")
+        return True
+    except OperationalError:
+        return False
+
+# Create an engine for the primary database
+primary_engine = create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict', echo=True)
+
+# Check if the primary database exists
+if database_exists(primary_engine, 'flightpredict'):
+    engine = primary_engine
+else:
+    # If the primary database does not exist, use the sample database
+    engine = create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict_sample', echo=True)
+
 CORS(app)
 
 
@@ -186,7 +205,30 @@ def get_data():
 #BH Test. determine which columns we need to query
 #delay y/n, airport code, lat, long, airline
 
-@app.route('/data_test/<int:offset>')
+# @app.route('/data_test/<int:offset>')
+# def geo_data(offset):
+#     offset = offset * 100000
+#     conn = psycopg2.connect(
+#         dbname="flightpredict",
+#         user="postgres",
+#         password="postgres",
+#         host="localhost",
+#         port="5432"
+#     )
+#     with conn.cursor() as cur:
+#         query = '''
+#                 SELECT "DEP_DEL15", "CARRIER_NAME", "PLANE_AGE", "DEPARTING_AIRPORT", "LATITUDE", "LONGITUDE"
+#                 FROM flight
+#                 LIMIT 100000 
+#                 OFFSET %s
+#                 '''
+#         cur.execute(query, (offset,))
+#         data = cur.fetchall()
+#         columns = [desc[0] for desc in cur.description]
+#         data_kv = [dict(zip(columns, row)) for row in data]
+#     return jsonify(data_kv)
+
+@app.route('/test/<int:offset>')
 def geo_data(offset):
     offset = offset * 100000
     conn = psycopg2.connect(
@@ -198,7 +240,7 @@ def geo_data(offset):
     )
     with conn.cursor() as cur:
         query = '''
-                SELECT "DEP_DEL15", "CARRIER_NAME", "PLANE_AGE", "DEPARTING_AIRPORT", "LATITUDE", "LONGITUDE"
+                SELECT "LATITUDE", "LONGITUDE", "DEP_DEL15", "CARRIER_NAME", "DEP_TIME_BLK", "DAY_OF_WEEK", "MONTH"
                 FROM flight
                 LIMIT 100000 
                 OFFSET %s
