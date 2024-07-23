@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Airport Delay Charts</title>
+
+<!-- Our CSS -->
+<link rel="stylesheet" type="text/css" href="static/charts.css">
+
+<style>.legend {padding: 10px;text-align: left; line-height: 18px; color: #555555; background-color: white}
+.legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; }</style>
+</head>
+
+<body>
+
+<!-- D3 JS -->
+<script src="https://d3js.org/d3.v6.min.js"></script>
+
+<!-- plotly -->
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
+
+<!-- Our JavaScript -->
+<script type="text/javascript" src="static/charts.js"></script>
+<div class="dropdowns">
+    <span>Select Variables:</span>
+    <select name="First Variable" class="selector" id="var1Selector"></select>
+    <select name="Second Variable" class="selector" id="var2Selector"></select>
+</div>
+<div id="chart">
+
+</div>
+</body>
+</html>
