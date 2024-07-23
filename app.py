@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, send_from_directory, url_for, request
 from sqlalchemy import create_engine, text, inspect
+from sqlalchemy.exc import OperationalError
 from weather_function import origin_fcstfn, origin_fcstfn_2, precip_fn #importing function from separate file
 from plane_function import aircraft_age
 from flask_cors import CORS
@@ -14,27 +15,29 @@ import psycopg2
 import joblib
 import pickle
 
-
 app = Flask(__name__)
 
-#Looks for sample database if full database does not exist
+# Function to check if a database exists
 def database_exists(engine, database_name):
     try:
-        # Try connecting to the database
-        engine.execute(f"SELECT 1 FROM pg_database WHERE datname='{database_name}'")
-        return True
+        # Use a Connection to execute the query
+        with engine.connect() as connection:
+            result = connection.execute(text(f"SELECT 1 FROM pg_database WHERE datname='{database_name}'"))
+            return result.fetchone() is not None
     except OperationalError:
         return False
 
 # Create an engine for the primary database
-primary_engine = create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict', echo=True)
+primary_engine = create_engine('postgresql://postgres:postgres@localhost:5432/postgres', echo=True)
 
-# Check if the primary database exists
+# Check if the primary database exists and set the database_name accordingly
 if database_exists(primary_engine, 'flightpredict'):
-    engine = primary_engine
+    database_name = 'flightpredict'
 else:
-    # If the primary database does not exist, use the sample database
-    engine = create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict_sample', echo=True)
+    database_name = 'flightpredict_sample'
+
+# Create the engine using the determined database name
+engine = create_engine(f'postgresql://postgres:postgres@localhost:5432/{database_name}', echo=True)
 
 CORS(app)
 
@@ -302,38 +305,13 @@ def get_data():
 #BH Test. determine which columns we need to query
 #delay y/n, airport code, lat, long, airline
 
-<<<<<<< Updated upstream
-# @app.route('/data_test/<int:offset>')
-# def geo_data(offset):
-#     offset = offset * 100000
-#     conn = psycopg2.connect(
-#         dbname="flightpredict",
-#         user="postgres",
-#         password="postgres",
-#         host="localhost",
-#         port="5432"
-#     )
-#     with conn.cursor() as cur:
-#         query = '''
-#                 SELECT "DEP_DEL15", "CARRIER_NAME", "PLANE_AGE", "DEPARTING_AIRPORT", "LATITUDE", "LONGITUDE"
-#                 FROM flight
-#                 LIMIT 100000 
-#                 OFFSET %s
-#                 '''
-#         cur.execute(query, (offset,))
-#         data = cur.fetchall()
-#         columns = [desc[0] for desc in cur.description]
-#         data_kv = [dict(zip(columns, row)) for row in data]
-#     return jsonify(data_kv)
 
-@app.route('/test/<int:offset>')
-=======
-@app.route('/map/<int:offset>')
->>>>>>> Stashed changes
+@app.route('/chart/<int:offset>')
+
 def geo_data(offset):
     offset = offset * 100000
     conn = psycopg2.connect(
-        dbname="flightpredict",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
@@ -386,7 +364,7 @@ def chart_data(offset):
 @app.route('/2019_delay_tmax')
 def hist_tmax_delays():
     conn = psycopg2.connect(
-        dbname="flightpredict",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
@@ -433,7 +411,7 @@ def hist_tmax_delays():
 @app.route('/2019_delay_awnd')
 def hist_awnd_delays():
     conn = psycopg2.connect(
-        dbname="flightpredict",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
@@ -463,7 +441,7 @@ def hist_awnd_delays():
 @app.route('/2019_delay_prcp')
 def hist_prcp_delays():
     conn = psycopg2.connect(
-        dbname="flightpredict",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
