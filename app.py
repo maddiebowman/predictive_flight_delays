@@ -16,7 +16,26 @@ import pickle
 
 
 app = Flask(__name__)
-engine=create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict', echo=True)
+
+#Looks for sample database if full database does not exist
+def database_exists(engine, database_name):
+    try:
+        # Try connecting to the database
+        engine.execute(f"SELECT 1 FROM pg_database WHERE datname='{database_name}'")
+        return True
+    except OperationalError:
+        return False
+
+# Create an engine for the primary database
+primary_engine = create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict', echo=True)
+
+# Check if the primary database exists
+if database_exists(primary_engine, 'flightpredict'):
+    engine = primary_engine
+else:
+    # If the primary database does not exist, use the sample database
+    engine = create_engine('postgresql://postgres:postgres@localhost:5432/flightpredict_sample', echo=True)
+
 CORS(app)
 
 # Load the pre-trained model, scaler, and encoder
@@ -283,7 +302,30 @@ def get_data():
 #BH Test. determine which columns we need to query
 #delay y/n, airport code, lat, long, airline
 
-@app.route('/data_test/<int:offset>')
+# @app.route('/data_test/<int:offset>')
+# def geo_data(offset):
+#     offset = offset * 100000
+#     conn = psycopg2.connect(
+#         dbname="flightpredict",
+#         user="postgres",
+#         password="postgres",
+#         host="localhost",
+#         port="5432"
+#     )
+#     with conn.cursor() as cur:
+#         query = '''
+#                 SELECT "DEP_DEL15", "CARRIER_NAME", "PLANE_AGE", "DEPARTING_AIRPORT", "LATITUDE", "LONGITUDE"
+#                 FROM flight
+#                 LIMIT 100000 
+#                 OFFSET %s
+#                 '''
+#         cur.execute(query, (offset,))
+#         data = cur.fetchall()
+#         columns = [desc[0] for desc in cur.description]
+#         data_kv = [dict(zip(columns, row)) for row in data]
+#     return jsonify(data_kv)
+
+@app.route('/test/<int:offset>')
 def geo_data(offset):
     offset = offset * 100000
     conn = psycopg2.connect(
@@ -295,7 +337,7 @@ def geo_data(offset):
     )
     with conn.cursor() as cur:
         query = '''
-                SELECT "DEP_DEL15", "CARRIER_NAME", "PLANE_AGE", "DEPARTING_AIRPORT", "LATITUDE", "LONGITUDE"
+                SELECT "LATITUDE", "LONGITUDE", "DEP_DEL15", "CARRIER_NAME", "DEP_TIME_BLK", "DAY_OF_WEEK", "MONTH"
                 FROM flight
                 LIMIT 100000 
                 OFFSET %s
@@ -306,10 +348,121 @@ def geo_data(offset):
         data_kv = [dict(zip(columns, row)) for row in data]
     return jsonify(data_kv)
 
+#endpoints for sql queries: 2019 delays per weather condition
+@app.route('/2019_delay_tmax')
+def hist_tmax_delays():
+    conn = psycopg2.connect(
+        dbname="flightpredict",
+        user="postgres",
+        password="postgres",
+        host="localhost",
+        port="5432"
+    )
+    with conn.cursor() as cur:
+        query = '''
+    WITH total_counts AS (
+        SELECT COUNT("DEP_DEL15") AS total
+        FROM flight
+    ),
+    bucketed_data AS (
+        SELECT 
+            -- Bucket temperatures into 10-degree ranges
+            CONCAT(
+                CAST(FLOOR("TMAX" / 10) * 10 AS TEXT),
+                '–',
+                CAST(FLOOR("TMAX" / 10) * 10 + 10 AS TEXT)
+            ) AS temperature_bucket,
+            COUNT("DEP_DEL15") AS count_of_delays,
+            ROUND((COUNT("DEP_DEL15")::numeric / (SELECT total FROM total_counts)) * 100, 2) AS percentage_of_total_delays
+        FROM 
+            flight
+        GROUP BY 
+            temperature_bucket
+    )
+    SELECT 
+        temperature_bucket,
+        SUM(count_of_delays) AS total_count_of_delays,
+        SUM(percentage_of_total_delays) AS total_percentage_of_total_delays
+    FROM 
+        bucketed_data
+    GROUP BY 
+        temperature_bucket
+    ORDER BY 
+        MIN(CAST(SPLIT_PART(temperature_bucket, '–', 1) AS INTEGER));
+        '''
+        cur.execute(query)
+        data = cur.fetchall()
+        columns = [desc[0] for desc in cur.description]
+        data_kv = [dict(zip(columns, row)) for row in data]
+    return jsonify(data_kv)
+
+@app.route('/2019_delay_awnd')
+def hist_awnd_delays():
+    conn = psycopg2.connect(
+        dbname="flightpredict",
+        user="postgres",
+        password="postgres",
+        host="localhost",
+        port="5432"
+    )
+    with conn.cursor() as cur:
+        query = ''' 
+    SELECT 
+        CONCAT(FLOOR("AWND" / 5) * 5, '–', FLOOR("AWND" / 5) * 5 + 5) AS wind_speed_bucket,
+        COUNT("DEP_DEL15") AS count_of_delays,
+        ROUND((COUNT("DEP_DEL15")::numeric / total_count.total) * 100, 2) AS percentage_of_total_delays
+    FROM 
+        flight
+    CROSS JOIN 
+        (SELECT COUNT("DEP_DEL15") AS total FROM flight) AS total_count
+    GROUP BY 
+        wind_speed_bucket, total_count.total
+    ORDER BY 
+        wind_speed_bucket;
+        '''
+        cur.execute(query)
+        data = cur.fetchall()
+        columns = [desc[0] for desc in cur.description]
+        data_kv = [dict(zip(columns, row)) for row in data]
+    return jsonify(data_kv)
+
+@app.route('/2019_delay_prcp')
+def hist_prcp_delays():
+    conn = psycopg2.connect(
+        dbname="flightpredict",
+        user="postgres",
+        password="postgres",
+        host="localhost",
+        port="5432"
+    )
+    with conn.cursor() as cur:
+        query = '''
+    SELECT 
+        (FLOOR("PRCP" / 0.5) * 0.5) AS precipitation_bucket,
+        COUNT("DEP_DEL15") AS count_of_delays,
+        ROUND((COUNT("DEP_DEL15")::numeric / total_count.total) * 100, 2) AS percentage_of_total_delays
+    FROM 
+        flight
+    CROSS JOIN 
+        (SELECT COUNT("DEP_DEL15") AS total FROM flight) AS total_count
+    GROUP BY 
+        (FLOOR("PRCP" / 0.5) * 0.5), total_count.total
+    ORDER BY 
+        (FLOOR("PRCP" / 0.5) * 0.5);
+        '''
+        cur.execute(query)
+        data = cur.fetchall()
+        columns = [desc[0] for desc in cur.description]
+        data_kv = [dict(zip(columns, row)) for row in data]
+    return jsonify(data_kv)
+
+#weather stats historical visualizations - test only. Will incorporate into visuals later
+@app.route('/weather_stats')
+def weather_stats():
+    return render_template('weather_stats.html')
+
 #weather at origination
 @app.route('/weather/<flight_date>/<origination>/')
-
-
 def weather(flight_date, origination):
     
     try:
@@ -337,7 +490,7 @@ def precipitation(flight_date, origin_airport):
         precipitation_data = precip_fn(flight_date, origin_airport)
         return jsonify(precipitation_data)
 
-
+#live flight data endpoint - not currently in use
 @app.route('/plane/<flight_date>/<flight_num>/')
 def plane(flight_date, flight_num):
     #example date 2024-07-17; example flight_num wn658
