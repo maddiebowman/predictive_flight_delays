@@ -20,9 +20,10 @@ app = Flask(__name__)
 # Function to check if a database exists
 def database_exists(engine, database_name):
     try:
-        # Try connecting to the database
-        result = engine.execute(f"SELECT 1 FROM pg_database WHERE datname='{database_name}'")
-        return result.fetchone() is not None
+        # Use a Connection to execute the query
+        with engine.connect() as connection:
+            result = connection.execute(text(f"SELECT 1 FROM pg_database WHERE datname='{database_name}'"))
+            return result.fetchone() is not None
     except OperationalError:
         return False
 
