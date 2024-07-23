@@ -57,6 +57,8 @@ Following the process of feature engineering the following were selected for tra
 
 ## Flask Application
 
+A program was created to establish a database with postgres. `db.py` includes all the data points while `db_sample.py` has a randomly selected sample which is easier to run on less powerful machines. `app.py` will use the full database if it is available, but will use the sample database as a backup if not. The data is then queried from the postgres database and returned as jsonified data or used for the various routes and visualizations on the website.
+
 ## Project Summary & Analysis
 
 ## Resources
