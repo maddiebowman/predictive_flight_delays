@@ -1,9 +1,8 @@
 # Predictive Flight Delay Model & User Application
-*After cloning the repository to local, navigate to `data` folder and click **`full_data_flightdelays.csv.zip`**, expanding the file to an accessible csv.*
 
 1. Open **`data_preprocessing.ipynb`** to clean and sample data, saving both as new csv files.
 
-2. Run **`python db.py`** in terminal to create a database named `'flightpredict'` and store the preprocessed data into new collections.
+2. Run **`python db.py`** in terminal to unzip **`full_data_flightdelays.csv.zip`** and create a database named `'flightpredict'` and store the preprocessed data into new collections.
 
 3. Open **`flight_delay_predictions.ipynb`** to build predictive learning model and save h5 files.
 
