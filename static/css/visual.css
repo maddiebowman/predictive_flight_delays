@@ -6,13 +6,23 @@ body {
 
 .header {
     display: flex;
-    align-items: center;
-    margin-bottom: 70px;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center-align text */
+    margin-bottom: 40px;
 }
 
 h1 {
     flex-grow: 1;
     text-align: center;
+}
+
+.subheading {
+    font-size: 13px;
+    text-align: center;
+    margin-top: 3px; 
+    color: #666; 
+    max-width: 695px;
+    line-height: 1.5; 
 }
 
 .nav-buttons {
@@ -74,11 +84,14 @@ h1 {
 .box h2 {
     text-align: center;
     margin-bottom: 20px;
+    font-size: 1.5em; /* Ensure the font size is appropriate */
+    color: #333; /* Darker color for better readability */
 }
 
 .image-container {
     display: flex;
     justify-content: space-between;
+    align-content: center;
 }
 
 .image-container img {
@@ -92,13 +105,133 @@ h1 {
     width: 100%;
 }
 
-@media (max-width: 768px) {
-    .image-container {
-    flex-direction: column;
-    }
+.legend {
+    padding: 10px;
+    text-align: center;
+    line-height: 18px;
+    color: #555555;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    display: inline-block; /* Ensure sizes to content */
+    width: 115px; 
+}
 
-.image-container img {
+.legend-title {
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.legend-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.legend-color-box {
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.legend-label {
+    vertical-align: middle;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.legend-bottom {
+    margin-top: 5px; /* Space above the bottom label */
+}
+
+.chart-container {
+    display: flex;
+    gap: 20px; /* Space between charts */
     width: 100%;
+    flex-wrap: wrap; /* Wrap chart if necessary */
+    margin-top: 20px; /* Space above the chart container */
+}
+
+.chart-box {
+    flex: 1; /* Allows charts to take up equal space */
+    height: 700px;
+    width: 750px;
+    padding: 10px; 
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    margin-bottom: 5px; /* Space below each chart */
+}
+
+.chart-title {
+    font-family: Arial, sans-serif;
     margin-bottom: 20px;
-    }
+    font-size: 1.5em;
+    text-align: center;
+    color: #333; 
+}
+
+.axis-label {
+    font-size: 11px;
+    text-anchor: middle;
+}
+
+.dropdown-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 20px; /* Space between selectors */
+}
+
+.dropdowns {
+    display: flex;
+    align-items: center; 
+    justify-content: flex-end; /* Align selectors to the right */
+    margin-bottom: 20px;
+    padding-right: 20px; 
+}
+
+.dropdown-title {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 16px;
+    margin-right: 20px; 
+    margin-top: 30px;
+}
+
+.dropdowns span {
+    font-size: 14px;
+    margin-bottom: 10px;
+    margin-right: 20px; 
+}
+
+label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+
+.selector {
+    width: 200px;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.selector:focus {
+    border-color: #2196F3;
+    box-shadow: 0 0 8px rgba(33, 150, 243, 0.2);
 }
