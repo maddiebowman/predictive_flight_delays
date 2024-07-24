@@ -8,8 +8,11 @@
 
 #### Additional Files
 **db.py:** Creates database containing full dataset
+
 **/notebooks:** Jupyter lab notebooks containing data preprocessing, feature engineering, model training and analysis of feature selection.
+
 **/trained_modules:** 
+
 **/trained_modules_R:** 
 
 
