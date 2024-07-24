@@ -1,37 +1,43 @@
 # Predictive Flight Delay Model & User Application
 
-1. Open **`data_preprocessing.ipynb`** to clean and sample data, saving both as new csv files.
+#### *Instructions*
+1. Run **`python db_sample.py`** in terminal to unzip `full_data_flightdelays.csv.zip` and create a new database that stores sampled data into new collections.
 
-2. Run **`python db.py`** in terminal to unzip **`full_data_flightdelays.csv.zip`** and create a database named `'flightpredict'` and store the preprocessed data into new collections.
+3. Run **`python app.py`** in terminal to launch the flask application with multiple routes and access the predictive delay dashboard.
 
-3. Open **`flight_delay_predictions.ipynb`** to build predictive learning model and save h5 files.
 
-4. Run **`app.py`** in terminal to launch the flask application, an interactive user dashboard that receives multiple inputs of user flight data, returning an output of **`YES`** or **`NO`** for a predicted flight delay and corresponding visualizations of the input flight and weather report. 
+#### Additional Files
+**db.py:** Creates database containing full dataset
 
+**/notebooks:** Jupyter lab notebooks containing data preprocessing, feature engineering, model training and analysis of feature selection.
+
+**/trained_modules:** 
+
+**/trained_modules_R:** 
 
 
 ## Project Overview
 ### Outline 
 Using historical flight and weather data, build a machine learning model that predicts future flight delays and cancellations. This model and the related visuals are supported by an interactive user application that reports the probability of a given flight being delayed or canceled, to provide more accurate estimates of departure and arrival times for passengers and airline operations. 
 
-### Data
-**Dataset: [Kaggle - 2019 Airline Delays with Weather and Airport Detail](https://www.kaggle.com/datasets/threnjen/2019-airline-delays-and-cancellations)**
+### Data Sources
+**Main Dataset: [Kaggle - 2019 Airline Delays with Weather and Airport Detail](https://www.kaggle.com/datasets/threnjen/2019-airline-delays-and-cancellations)**
 
 26 Columns - 1.37 GB
 
 **Dataset Sourced:** 
+
 ***[Bureau of Transportation Statistics](https://www.transtats.bts.gov/databases.asp?Z1qr_VQ=E&Z1qr_Qr5p=N8vn6v10&f7owrp6_VQF=D)***
 ***[National Centers for Environmental Information (NOAA)](https://www.ncdc.noaa.gov/cdo-web/datasets)***
+
 
 #### Additional Data Used:
 
 **Airports and Locations - JSON Data**
 **[GitHub Gist - `airports.json`](https://gist.github.com/tdreyno/4278655)**
 
-**API Connections for Real-Time Flight and Weather Data:**
-**[API Layer - Aviation Stack API](https://apilayer.com/)**
-**[FAA Government Aircraft API Data](https://apilayer.com/)**
-**[OpenWeather API](https://openweathermap.org/)**
+**API Connections for Real-Time Flight and Weather Data**
+**[API - National Weather Service](https://weather-gov.github.io/api/general-faqs)**
 
 ## Data Preprocessing
 #### Feature Engineering
