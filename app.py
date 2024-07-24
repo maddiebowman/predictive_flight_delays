@@ -337,26 +337,28 @@ def geo_data(offset):
         data_kv = [dict(zip(columns, row)) for row in data]
     return jsonify(data_kv)
 
-@app.route('/chart/<int:offset>')
-def chart_data(offset):
+@app.route('/charts/<var1>/<var2>/<int:offset>')
+def chart_data(offset, var1, var2):
     offset = offset * 100000
     conn = psycopg2.connect(
-        dbname="flightpredict_sample",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
         port="5432"
     )
+    var1 = '"' + var1 + '"'
+    var2 = '"' + var2 + '"'
     with conn.cursor() as cur:
-        query = '''
-                SELECT "DAY_OF_WEEK", "DEP_TIME_BLK",
+        query = f'''
+                SELECT {var1}, {var2},
                 SUM("DEP_DEL15")::INTEGER AS TOT_DELAYS, 
                 COUNT("DEP_DEL15") AS TOTAL_FLIGHTS 
                 FROM flight
-                GROUP BY "DAY_OF_WEEK", "DEP_TIME_BLK"
+                GROUP BY {var1}, {var2}
                 LIMIT 100000 
-                OFFSET %s
-                '''
+                OFFSET ''' + '%s'
+                
         cur.execute(query, (offset,))
         data = cur.fetchall()
         columns = [desc[0] for desc in cur.description]
