@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Routes</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='../static/images/favicon.ico') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/index.css') }}">
+    <!-- D3 library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js from CDN -->
+    <!-- Plotly library -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.4;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: url('../static/images/homepage_background.png') no-repeat center center fixed;
+        background-size: cover;
+    }
+    .data-button-container {
+        position: fixed;
+        bottom: 25px;
+        right: 28px;
+        z-index: 1000;
+    }
+    #home{
+        font-weight: bold;
+    }
+    .nav-button {
+        background-color: #3ab1ec;;
+        color: rgb(234, 239, 241);
+        border: none;
+        padding: 10px 10px;
+        padding-left: 50px;
+        padding-right: 50px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        margin-bottom: 80px;
+        margin-right: 30px;
+    }
+    .nav-button:hover {
+        background-color: #56c0f5;
+    }
+    .external-links-container {
+        margin-top: 20px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    .external-button {
+        display: inline-block;
+        width: 28%;
+        padding: 10px;
+        margin: 10px 5px;
+        background-color: #3498db;
+        color: white;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        font-size: 18px;
+        transition: background-color 0.3s ease;
+    }
+    .external-button:hover {
+        background-color: #29b963;
+    }
+</style>
+<body>
+    <div class="container">
+        <h1>Data Powering Flight Predictions & Visuals</h1>
+    
+        <div class="routes-container">
+            <h2>Available JSON Routes</h2>
+            <ul id="routeList">
+                {% for route in data_routes %}
+                <li>
+                    <button class="route-button" onclick="window.open('{{ route.url }}', '_blank')">{{ route.name }}</button>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="external-links-container">
+            <h2>External Data Sources</h2>
+            <a href="https://gist.github.com/tdreyno/4278655#file-airports-json" target="_blank" class="external-button">Airport GeoData</a>
+            <a href="https://weather-gov.github.io/api/general-faqs" target="_blank" class="external-button">Weather API</a>
+            <a href="https://www.kaggle.com/datasets/threnjen/2019-airline-delays-and-cancellations" target="_blank" class="external-button">Kaggle Dataset</a>
+        </div>
+    </div>
+    
+    <div class="data-button-container">
+        <a href="{{ url_for('homepage') }}" class="nav-button" id="home">Home</a>
+    </div>
+</body>
+</html>

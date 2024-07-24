@@ -27,16 +27,22 @@ function get_temp_delays() {
 
 function createTempChart(buckets, pctDelays) {
     // Set up dimensions and margins
-    const margin = { top: 20, right: 30, bottom: 40, left: 40 },
-          width = 800 - margin.left - margin.right,
-          height = 400 - margin.top - margin.bottom;
+    const margin = { top: 50, right: 30, bottom: 60, left: 50 },
+          width = 700 - margin.left - margin.right,
+          height = 600 - margin.top - margin.bottom;
 
     // Append SVG to the body
-    const svg = d3.select('body').append('svg')
+    const svg = d3.select('#temp-chart').append('svg')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // Add light grey background to match container
+    svg.append('rect')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('fill', '#f9f9f9');
 
     // Set up x and y scales
     const x = d3.scaleBand()
@@ -54,7 +60,7 @@ function createTempChart(buckets, pctDelays) {
         .attr('x', width / 2)
         .attr('y', -margin.top / 2)
         .attr('text-anchor', 'middle')
-        .attr('font-size', '16px')
+        .attr('font-size', '14px')
         .attr('font-weight', 'bold')
         .text('% of Flight Delays in 2019 by Temperature Range');
 
@@ -67,20 +73,21 @@ function createTempChart(buckets, pctDelays) {
         .attr('x', width / 2)
         .attr('y', margin.bottom - 10)
         .attr('fill', 'black')
+        .attr('font-size', '11px')
         .attr('text-anchor', 'middle')
-        .text('Temperature (F)');
+        .attr('font-weight', 'bold')
+        .text('Temperature (°F)');
 
     // Append y-axis
-    svg.append('g')
-        .attr('class', 'y-axis')
-        .call(d3.axisLeft(y))
-        .append('text')
-        .attr('x', -margin.left)
-        .attr('y', -40)
-        .attr('fill', 'black')
-        .attr('text-anchor', 'middle')
+    svg.append('text')
+        .attr('class', 'axis-label')
         .attr('transform', 'rotate(-90)')
-        .text('% of Flights Delayed in 2019');
+        .attr('y', -50) // Adjust this value to position the label correctly
+        .attr('x', -height / 2)
+        .attr('dy', '1em')
+        .style('text-anchor', 'middle')
+        .attr('font-weight', 'bold')
+        .text('% of Flights Delayed');
 
 
     // Append bars
@@ -92,7 +99,7 @@ function createTempChart(buckets, pctDelays) {
         .attr('y', d => y(d))
         .attr('width', x.bandwidth())
         .attr('height', d => height - y(d))
-        .attr('fill', '#69b3a2'); // Change bar color
+        .attr('fill', '#0f9641'); // Change bar color
 
         // Add text labels to bars
         svg.selectAll('.bar-label')
@@ -100,9 +107,11 @@ function createTempChart(buckets, pctDelays) {
         .enter().append('text')
         .attr('class', 'bar-label')
         .attr('x', (d, i) => x(buckets[i]) + x.bandwidth() / 2)
-        .attr('y', d => y(d) - 5) // Position above the bar
+        .attr('y', d => y(d) - 10) // Position above the bar
         .attr('text-anchor', 'middle')
         .attr('fill', 'black')
+        .attr('font-size', '11px') // Set font size
+        .attr('font-weight', 'bold')
         .text(d => `${d.toFixed(2)}%`); // Add % to data labels
 }
 
@@ -153,16 +162,22 @@ function get_awnd_delays() {
 
 function createAwndChart(sortedData) {
     // Set up dimensions and margins
-    const margin = { top: 60, right: 30, bottom: 60, left: 60 },
-          width = 800 - margin.left - margin.right,
-          height = 400 - margin.top - margin.bottom;
+    const margin = { top: 100, right: 30, bottom: 60, left: 60 },
+          width = 500 - margin.left - margin.right,
+          height = 600 - margin.top - margin.bottom;
 
     // Append SVG to the body
-    const svg = d3.select('body').append('svg')
+    const svg = d3.select('#awnd-chart').append('svg')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // Add light grey background to match container
+    svg.append('rect')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('fill', '#f9f9f9');
 
     // Set up x and y scales
     const x = d3.scaleBand()
@@ -180,7 +195,7 @@ function createAwndChart(sortedData) {
         .attr('x', width / 2)
         .attr('y', -margin.top / 2)
         .attr('text-anchor', 'middle')
-        .attr('font-size', '16px')
+        .attr('font-size', '14px')
         .attr('font-weight', 'bold')
         .text('% of Flight Delays in 2019 by Wind Speed Range');
 
@@ -194,6 +209,8 @@ function createAwndChart(sortedData) {
         .attr('y', margin.bottom - 10)
         .attr('fill', 'black')
         .attr('text-anchor', 'middle')
+        .attr('font-weight', 'bold')
+        .attr('font-size', '11px')
         .text('Wind Speed (mph)');
 
     // Append y-axis
@@ -201,12 +218,14 @@ function createAwndChart(sortedData) {
         .attr('class', 'y-axis')
         .call(d3.axisLeft(y))
         .append('text')
-        .attr('x', -margin.left)
-        .attr('y', -40)
+        .attr('x', -width / 2)
+        .attr('y', -50)
         .attr('fill', 'black')
         .attr('text-anchor', 'middle')
         .attr('transform', 'rotate(-90)')
-        .text('% of Flights Delayed in 2019');
+        .attr('font-weight', 'bold')
+        .attr('font-size', '11px')
+        .text('% of Flights Delayed');
 
     // Append bars
     svg.selectAll('.bar')
@@ -217,7 +236,7 @@ function createAwndChart(sortedData) {
         .attr('y', d => y(d.percentage_of_total_delays))
         .attr('width', x.bandwidth())
         .attr('height', d => height - y(d.percentage_of_total_delays))
-        .attr('fill', '#69b3a2'); // Change bar color
+        .attr('fill', '#2196F3'); // Change bar color
 
     // Add text labels to bars
     svg.selectAll('.bar-label')
@@ -228,6 +247,8 @@ function createAwndChart(sortedData) {
         .attr('y', d => y(d.percentage_of_total_delays) - 5) // Position above the bar
         .attr('text-anchor', 'middle')
         .attr('fill', 'black')
+        .attr('font-weight', 'bold')
+        .attr('font-size', '12px')
         .text(d => `${d.percentage_of_total_delays.toFixed(2)}%`); // Add % to data labels
 }
 
@@ -275,7 +296,7 @@ function get_prcp_delays() {
 
 function createPrcpChart(sortedData) {
     // Set up dimensions and margins
-    const margin = { top: 60, right: 30, bottom: 60, left: 60 },
+    const margin = { top: 20, right: 30, bottom: 40, left: 40 },
           width = 800 - margin.left - margin.right,
           height = 400 - margin.top - margin.bottom;
 
@@ -302,7 +323,7 @@ function createPrcpChart(sortedData) {
         .attr('x', width / 2)
         .attr('y', -margin.top / 2)
         .attr('text-anchor', 'middle')
-        .attr('font-size', '16px')
+        .attr('font-size', '14px')
         .attr('font-weight', 'bold')
         .text('% of Flight Delays in 2019 by Precipitation Range');
 

@@ -31,10 +31,10 @@ def database_exists(engine, database_name):
 primary_engine = create_engine('postgresql://postgres:postgres@localhost:5432/postgres', echo=True)
 
 # Check if the primary database exists and set the database_name accordingly
-if database_exists(primary_engine, 'flightpredict_sample'):
-    database_name = 'flightpredict_sample'
-else:
+if database_exists(primary_engine, 'flightpredict'):
     database_name = 'flightpredict'
+else:
+    database_name = 'flightpredict_sample'
 
 # Create the engine using the determined database name
 engine = create_engine(f'postgresql://postgres:postgres@localhost:5432/{database_name}', echo=True)
@@ -292,29 +292,26 @@ def show_visuals():
 
 @app.route('/data')
 def get_data(): 
-    """List all available data endpoints."""
-    data_routes =  [
-        {"url": "/map/0", "name": "Sampled Map Data"},
-        {"url": "/chart/0", "name": "Sampled Chart Data"},
-        {"url": "/weather/2024-07-28/lax/", "name": "Weather Forecast Data"},
-        {"url": "/2019_delay_tmax", "name": "2019 Max Temp Data"},
-        {"url": "/2019_delay_awnd", "name": "2019 Wind Speed Data"},
-        {"url": "/2019_delay_prcp", "name": "2019 Precipitation Data"}
-    ]
-
-    return render_template('data.html', data_routes=data_routes)
-    
+    query=text('''
+               SELECT * 
+               FROM flight
+               ''')
+    conn=engine.connect()
+    results=conn.execute(query)
+    conn.close()
+    results=[tuple(row[1:]) for row in results]
+    return jsonify(results)
 
 #BH Test. determine which columns we need to query
 #delay y/n, airport code, lat, long, airline
 
 
-@app.route('/map/<int:offset>')
+@app.route('/chart/<int:offset>')
 
 def geo_data(offset):
     offset = offset * 100000
     conn = psycopg2.connect(
-        dbname="flightpredict_sample",
+        dbname=database_name,
         user="postgres",
         password="postgres",
         host="localhost",
@@ -337,35 +334,32 @@ def geo_data(offset):
         data_kv = [dict(zip(columns, row)) for row in data]
     return jsonify(data_kv)
 
-@app.route('/charts/<var1>/<var2>/<int:offset>')
-def chart_data(offset, var1, var2):
+@app.route('/chart/<int:offset>')
+def chart_data(offset):
     offset = offset * 100000
     conn = psycopg2.connect(
-        dbname=database_name,
+        dbname="flightpredict",
         user="postgres",
         password="postgres",
         host="localhost",
         port="5432"
     )
-    var1 = '"' + var1 + '"'
-    var2 = '"' + var2 + '"'
     with conn.cursor() as cur:
-        query = f'''
-                SELECT {var1}, {var2},
+        query = '''
+                SELECT "DAY_OF_WEEK", "DEP_TIME_BLK",
                 SUM("DEP_DEL15")::INTEGER AS TOT_DELAYS, 
                 COUNT("DEP_DEL15") AS TOTAL_FLIGHTS 
                 FROM flight
-                GROUP BY {var1}, {var2}
+                GROUP BY "DAY_OF_WEEK", "DEP_TIME_BLK"
                 LIMIT 100000 
-                OFFSET ''' + '%s'
-                
+                OFFSET %s
+                '''
         cur.execute(query, (offset,))
         data = cur.fetchall()
         columns = [desc[0] for desc in cur.description]
         data_kv = [dict(zip(columns, row)) for row in data]
 
     return jsonify(data_kv)
-
 #endpoints for sql queries: 2019 delays per weather condition
 @app.route('/2019_delay_tmax')
 def hist_tmax_delays():

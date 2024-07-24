@@ -1,9 +1,8 @@
 # Predictive Flight Delay Model & User Application
-*After cloning the repository to local, navigate to `data` folder and click **`full_data_flightdelays.csv.zip`**, expanding the file to an accessible csv.*
 
 1. Open **`data_preprocessing.ipynb`** to clean and sample data, saving both as new csv files.
 
-2. Run **`python db.py`** in terminal to create a database named `'flightpredict'` and store the preprocessed data into new collections.
+2. Run **`python db.py`** in terminal to unzip **`full_data_flightdelays.csv.zip`** and create a database named `'flightpredict'` and store the preprocessed data into new collections.
 
 3. Open **`flight_delay_predictions.ipynb`** to build predictive learning model and save h5 files.
 
@@ -56,6 +55,8 @@ Following the process of feature engineering the following were selected for tra
 **Model Optimization**
 
 ## Flask Application
+
+A program was created to establish a database with postgres. `db.py` includes all the data points while `db_sample.py` has a randomly selected sample which is easier to run on less powerful machines. `app.py` will use the full database if it is available, but will use the sample database as a backup if not. The data is then queried from the postgres database and returned as jsonified data or used for the various routes and visualizations on the website.
 
 ## Project Summary & Analysis
 
