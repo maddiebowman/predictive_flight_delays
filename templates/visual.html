@@ -9,7 +9,11 @@
     <!-- CSS Style Sheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/visual.css') }}">
     <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- D3 library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Plotly library -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -18,28 +22,50 @@
             <a href="{{ url_for('homepage') }}" class="nav-button" id="home">Home</a>
             <a href="{{ url_for('get_flight_predict') }}" class="nav-button" id="predict">Predict</a>
         </div>
-        <h1>Historical Visualizations</h1>
+        <h1>Historical Visualizations (2019 Flight Data)</h1>
+        <p class="subheading">
+            Explore a Leaflet powered heatmap of US airport delay rates, supported by interactive and static visualizations to further explain feature importance/selection and the different variables that may impact a flight delay in the United States.<br> 
+            <em>These visualizations represent a summary of available 2019 US flight data.</em>
+        </p>
     </div>
 
     <div class="container">
         <div class="box">
-            <h2>Heatmap of US Airport Traffic (2019)</h2>
-            <div class="image-container">
-                
-            </div>
+            <h2>Heatmap of US Airport Delays</h2>
+            <div id="heatmap" class="image-container"></div>
         </div>
         <div class="box">
-            <h2>Interactive Map (Monthly Airport Traffic)</h2>
-            <div class="image-container">
-                
+            <h2>Line Chart of US Flight Delays</h2>
+            <div class="dropdowns">
+                <span class="dropdown-title">Select Variables → </span>
+                <div class="dropdown-container">
+                    <label for="var1Selector">First Variable:</label>
+                    <select name="First Variable" class="selector" id="var1Selector"></select>
+                </div>
+                <div class="dropdown-container">
+                    <label for="var2Selector">Second Variable:</label>
+                    <select name="Second Variable" class="selector" id="var2Selector"></select>
+                </div>
+            </div>
+            <div id="chart" class="image-container"></div>
+        </div>
+        <div class="box">
+            <h2 class="chart-title">Weather Impact on US Flight Delays</h2>
+            <div id="weather-stats" class="chart-container">
+                <div id="temp-chart" class="chart-box"></div>
+                <div id="awnd-chart" class="chart-box"></div>
             </div>
         </div>
     </div>
+    <!-- D3 JS -->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
     <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <!-- Leaflet Heat Plugin -->
     <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
     <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/visuals.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/weather_stats.js') }}"></script>
 </body>
 </html>

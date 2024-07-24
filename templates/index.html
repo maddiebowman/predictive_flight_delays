@@ -50,7 +50,7 @@
                 <a href="{{ url_for('get_flight_predict') }}">
                     <h3>Flight Dashboard</h3>
                 </a>
-                <p>Predictive flight delay dashboard that analyzes user inputs to predict the chance of a delay, supported by a trip map and real-time weather features.</p>
+                <p>Predictive flight delay dashboard that analyzes user inputs to predict the chance of a delay, outputting a probability of delay with a trip map and real-time weather forecasts.</p>
             </div>
             <div class="preview-item">
                 <a href="{{ url_for('show_visuals') }}">
@@ -58,12 +58,15 @@
                 <a href="{{ url_for('show_visuals') }}">
                     <h3>Visualize</h3>
                 </a>
-                <p>Static visualizations from jupyter, produced in various languages to support our feature selection, model predictions and final analysis.</p>
+                <p>Interactive and static visualizations produced with JavaScript to analyze historical US flight delay patterns from available 2019 data, providing visual insight for feature selection.</p>
             </div>
             <div class="preview-item">
-                <img src="../static/images/preview3.png" alt="Preview 3">
-                <h3>Raw Data</h3>
-                <p>Visit different data endpoints used to power predictions and visuals. <strong> Select:</strong>  Sampled data, all data, or see additional data and APIs.</p>
+                <a href="{{ url_for('get_data') }}">
+                <img src="../static/images/preview3.png" alt="Preview 3"></a>
+                <a href="{{ url_for('get_data') }}">
+                    <h3>Raw Data</h3>
+                </a>
+                <p>Visit different data endpoints used to power predictions and visuals. <strong> Select:</strong>  Sampled data, weather forecasts, or view external data powering predictions and visuals.</p>
             </div>
         </div>
     </div>
