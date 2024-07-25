@@ -11,6 +11,7 @@
 
 **`/notebooks`:** Jupyter lab notebooks containing data preprocessing, feature engineering, model training and analysis of feature selection.
 
+
 **`/graveyard`:** Archived files
 
 
@@ -40,7 +41,21 @@ Using historical flight and weather data, build a machine learning model that pr
 
 **[National Weather Service Government API](https://weather-gov.github.io/api/general-faqs)**
 
+
 **[OpenWeather API](https://openweathermap.org/api)**
+
+#### Target Variable
+**Predicted Flight Delay:** `flight_delayed`
+`0` = No Delay Predicted
+`1` = Delay Over 15 Minutes Predicted
+#### **Final Chosen Features**
+Following the process of feature engineering the following were selected for training our model:
+* Harsh Weather Conditions,including max wind speed, max temprature, precipation. 
+* High-Delayed Airlines
+* Day of Week
+* Elements of Air Travel Congestion & Peak Traffic Times
+* Month
+
 
 ## Installation
 ```python  
