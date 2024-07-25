@@ -11,9 +11,9 @@
 
 **/notebooks:** Jupyter lab notebooks containing data preprocessing, feature engineering, model training and analysis of feature selection.
 
-**/trained_modules:** 
+**/trained_modules:** This folder contains the pkl files from NNW that we originally tested and built in flask.
 
-**/trained_modules_R:** 
+**/trained_modules_R:** This folder contains the pkl files from Random Forest model that were used on the final version of the model.
 
 
 ## Project Overview
@@ -47,13 +47,13 @@ Explain process of predicting for a future flight delay; features changed and ca
 **Predicted Flight Delay:** `flight_delayed`
 `0` = No Delay Predicted
 `1` = Delay Over 15 Minutes Predicted
-#### **Features**
+#### **Final Chosen Features**
 Following the process of feature engineering the following were selected for training our model:
-* Harsh Weather Conditions
+* Harsh Weather Conditions,including max wind speed, max temprature, precipation. 
 * High-Delayed Airlines
-* Aircraft Age
-* Air Travel Congestion & Peak Traffic Times
-* Possibility of Prior Tail Segment Delays
+* Day of Week
+* Elements of Air Travel Congestion & Peak Traffic Times
+* Month
 
 ## Compiling, Training, and Evaluating the Model
 **Neural Network Structure**
