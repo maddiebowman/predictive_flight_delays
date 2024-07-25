@@ -380,6 +380,7 @@ get_temp_delays();
 // Call the function to execute
 get_awnd_delays();
 
+
 // Will not clal the precipiation function to execute (does not tell a story about impact on delays)
 
 

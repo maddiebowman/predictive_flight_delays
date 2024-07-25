@@ -375,35 +375,39 @@ def hist_tmax_delays():
     )
     with conn.cursor() as cur:
         query = '''
-    WITH total_counts AS (
-        SELECT COUNT("DEP_DEL15") AS total
-        FROM flight
-    ),
-    bucketed_data AS (
+        WITH total_counts AS (
+            SELECT COUNT(*) AS total
+            FROM flight
+            WHERE "DEP_DEL15" = 1
+        ),
+        bucketed_data AS (
+            SELECT 
+                -- Bucket temperatures into 10-degree ranges
+                CONCAT(
+                    CAST(FLOOR("TMAX" / 10) * 10 AS TEXT),
+                    '–',
+                    CAST(FLOOR("TMAX" / 10) * 10 + 10 AS TEXT)
+                ) AS temperature_bucket,
+                COUNT("DEP_DEL15") AS count_of_delays,
+                ROUND((COUNT("DEP_DEL15")::numeric / (SELECT total FROM total_counts)) * 100, 2) AS percentage_of_total_delays
+            FROM 
+                flight
+            WHERE 
+                "DEP_DEL15" = 1
+            GROUP BY 
+                temperature_bucket
+        )
         SELECT 
-            -- Bucket temperatures into 10-degree ranges
-            CONCAT(
-                CAST(FLOOR("TMAX" / 10) * 10 AS TEXT),
-                '–',
-                CAST(FLOOR("TMAX" / 10) * 10 + 10 AS TEXT)
-            ) AS temperature_bucket,
-            COUNT("DEP_DEL15") AS count_of_delays,
-            ROUND((COUNT("DEP_DEL15")::numeric / (SELECT total FROM total_counts)) * 100, 2) AS percentage_of_total_delays
+            temperature_bucket,
+            SUM(count_of_delays) AS total_count_of_delays,
+            SUM(percentage_of_total_delays) AS total_percentage_of_total_delays
         FROM 
-            flight
+            bucketed_data
         GROUP BY 
             temperature_bucket
-    )
-    SELECT 
-        temperature_bucket,
-        SUM(count_of_delays) AS total_count_of_delays,
-        SUM(percentage_of_total_delays) AS total_percentage_of_total_delays
-    FROM 
-        bucketed_data
-    GROUP BY 
-        temperature_bucket
-    ORDER BY 
-        MIN(CAST(SPLIT_PART(temperature_bucket, '–', 1) AS INTEGER));
+        ORDER BY 
+            MIN(CAST(SPLIT_PART(temperature_bucket, '–', 1) AS INTEGER));
+
         '''
         cur.execute(query)
         data = cur.fetchall()
@@ -429,11 +433,14 @@ def hist_awnd_delays():
     FROM 
         flight
     CROSS JOIN 
-        (SELECT COUNT("DEP_DEL15") AS total FROM flight) AS total_count
+        (SELECT COUNT(*) AS total FROM flight WHERE "DEP_DEL15" = 1) AS total_count
+    WHERE 
+        "DEP_DEL15" = 1
     GROUP BY 
         wind_speed_bucket, total_count.total
     ORDER BY 
         wind_speed_bucket;
+
         '''
         cur.execute(query)
         data = cur.fetchall()
@@ -459,7 +466,9 @@ def hist_prcp_delays():
     FROM 
         flight
     CROSS JOIN 
-        (SELECT COUNT("DEP_DEL15") AS total FROM flight) AS total_count
+        (SELECT COUNT(*) AS total FROM flight WHERE "DEP_DEL15" = 1) AS total_count
+    WHERE 
+        "DEP_DEL15" = 1
     GROUP BY 
         (FLOOR("PRCP" / 0.5) * 0.5), total_count.total
     ORDER BY 
