@@ -2,11 +2,12 @@
 
 #### *Instructions*
 1. Run **`python db_sample.py`** to unzip `full_data_flightdelays.csv.zip`, creating a database to store sampled
-    Note: **`db.py`:** Creates database containing full dataset (current flask application utilizes the sample database)
+   
+    **Note: **`db.py`:** Creates database containing full dataset (current flask application utilizes the sample database)*
 
-3. Run **`python app.py`** to launch flask application, access predictive the flight delay dashboard and related visualizations
+2. Run **`python app.py`** to launch flask application, access predictive the flight delay dashboard and related visualizations
 
-**`/notebooks`:** Jupyter lab notebooks containing data preprocessing, feature engineering, model training and analysis of feature selection.
+**`/notebooks`:** Jupyter notebooks containing data preprocessing, feature engineering, model training and analysis of feature selection.
 
 
 **`/graveyard`:** Archived files
@@ -41,19 +42,6 @@ Using historical flight and weather data, build a machine learning model that pr
 
 **[OpenWeather API](https://openweathermap.org/api)**
 
-#### Target Variable
-**Predicted Flight Delay:** `flight_delayed`
-`0` = No Delay Predicted
-`1` = Delay Over 15 Minutes Predicted
-#### **Final Chosen Features**
-Following the process of feature engineering the following were selected for training our model:
-* Harsh Weather Conditions,including max wind speed, max temprature, precipation. 
-* High-Delayed Airlines
-* Day of Week
-* Elements of Air Travel Congestion & Peak Traffic Times
-* Month
-
-
 ## Installation
 ```python  
 !pip install gdown
@@ -71,6 +59,19 @@ pip install xgboost
 ```python  
 !pip install shap
 ```
+
+## Target Variable
+**Predicted Flight Delay:** `flight_delayed`
+`0` = No Delay Predicted
+`1` = Delay Over 15 Minutes Predicted
+
+### **Final Features Chosen**
+Following the process of feature engineering the following were selected for training our model:
+* Harsh Weather Conditions,including max wind speed, max temprature, precipation. 
+* High-Delayed Airlines
+* Day of Week
+* Elements of Air Travel Congestion & Peak Traffic Times
+* Month
 
 ## Neural Network Model
 
