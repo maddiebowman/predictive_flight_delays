@@ -7,18 +7,16 @@
 
 
 #### Additional Files
-**db.py:** Creates database containing full dataset
+**`db.py`:** Creates database containing full dataset (current flask application utilizes the sample database)
 
-**/notebooks:** Jupyter lab notebooks containing data preprocessing, feature engineering, model training and analysis of feature selection.
+**`/notebooks`:** Jupyter lab notebooks containing data preprocessing, feature engineering, model training and analysis of feature selection.
 
-**/trained_modules:** 
-
-**/trained_modules_R:** 
+**`/graveyard`:** Archived files
 
 
 ## Project Overview
 ### Outline 
-Using historical flight and weather data, build a machine learning model that predicts future flight delays and cancellations. This model and the related visuals are supported by an interactive user application that reports the probability of a given flight being delayed or canceled, to provide more accurate estimates of departure and arrival times for passengers and airline operations. 
+Using historical flight and weather data, build a machine learning model that predicts future flight delays and cancellations. The model predictions are supported by an interactive user application that reports the probability of an input flight being delayed, based on a variety of features that have impacted historical delays. Supporting our predictive flight delay dashboard, are interactive visualizations that analyze the historical 2019 flight data to provide further visual summary. Following future improvements and model optimization, our application aims to provide more accurate estimates of departure and arrival times for passengers and airline operations. 
 
 ### Data Sources
 **Main Dataset: [Kaggle - 2019 Airline Delays with Weather and Airport Detail](https://www.kaggle.com/datasets/threnjen/2019-airline-delays-and-cancellations)**
@@ -37,34 +35,33 @@ Using historical flight and weather data, build a machine learning model that pr
 **[GitHub Gist - `airports.json`](https://gist.github.com/tdreyno/4278655)**
 
 **API Connections for Real-Time Flight and Weather Data**
-**[API - National Weather Service](https://weather-gov.github.io/api/general-faqs)**
+**[National Weather Service Government API](https://weather-gov.github.io/api/general-faqs)**
+**[OpenWeather API](https://openweathermap.org/api)**
 
-## Data Preprocessing
-#### Feature Engineering
-Explain process of predicting for a future flight delay; features changed and calculations required to return meaningful features to train our model.
+## Installation
+```python  
+!pip install gdown
+```
 
-#### Target Variable
-**Predicted Flight Delay:** `flight_delayed`
-`0` = No Delay Predicted
-`1` = Delay Over 15 Minutes Predicted
-#### **Features**
-Following the process of feature engineering the following were selected for training our model:
-* Harsh Weather Conditions
-* High-Delayed Airlines
-* Aircraft Age
-* Air Travel Congestion & Peak Traffic Times
-* Possibility of Prior Tail Segment Delays
-
-## Compiling, Training, and Evaluating the Model
-**Neural Network Structure**
-
-**Model Optimization**
+```python  
+pip install imblearn
+```
+```python  
+pip install xgboost
+```
+```python  
+!pip install seaborn
+```
+```python  
+!pip install shap
+```
 
 ## Flask Application
 
 A program was created to establish a database with postgres. `db.py` includes all the data points while `db_sample.py` has a randomly selected sample which is easier to run on less powerful machines. `app.py` will use the full database if it is available, but will use the sample database as a backup if not. The data is then queried from the postgres database and returned as jsonified data or used for the various routes and visualizations on the website.
 
 ## Project Summary & Analysis
+*Available in: **`Presentation_SlideDeck.pdf`***
 
 ## Resources
 #### Helpful Documentation
