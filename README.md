@@ -62,7 +62,7 @@ pip install xgboost
 
 ## Flask Application
 
-A program was created to establish a database with postgres. `db.py` includes all the data points while `db_sample.py` has a randomly selected sample which is easier to run on less powerful machines. `app.py` will use the full database if it is available, but will use the sample database as a backup if not. The data is then queried from the postgres database and returned as jsonified data or used for the various routes and visualizations on the website.
+Program created with postgres to establish a database. **`db.py`** includes all the data points, while **`db_sample.py`** has randomly selected sample data, *easier to run on less powerful machines.* **`app.py`** uses the full database if available, then will use the sample database as a backup if unavailable. Data is then queried from postgres database and returned as jsonified data or used as data routes for user application visuals.
 
 ## Project Summary & Analysis
 *Available in: **`Presentation_SlideDeck.pdf`***
