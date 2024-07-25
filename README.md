@@ -1,61 +1,80 @@
 # Predictive Flight Delay Model & User Application
 
-1. Open **`data_preprocessing.ipynb`** to clean and sample data, saving both as new csv files.
+#### *Instructions*
+1. Run **`python db_sample.py`** to unzip `full_data_flightdelays.csv.zip`, creating a database to store sampled
+    Note: **`db.py`:** Creates database containing full dataset (current flask application utilizes the sample database)
 
-2. Run **`python db.py`** in terminal to unzip **`full_data_flightdelays.csv.zip`** and create a database named `'flightpredict'` and store the preprocessed data into new collections.
+3. Run **`python app.py`** to launch flask application, access predictive the flight delay dashboard and related visualizations
 
-3. Open **`flight_delay_predictions.ipynb`** to build predictive learning model and save h5 files.
+**`/notebooks`:** Jupyter lab notebooks containing data preprocessing, feature engineering, model training and analysis of feature selection.
 
-4. Run **`app.py`** in terminal to launch the flask application. This interactive dashboard allows users to input flight data and provides a predicted percentage chance of flight delay. It also generates visualizations based on the flight and weather data provided.
 
+**`/graveyard`:** Archived files
 
 
 ## Project Overview
 ### Outline 
-Using historical flight and weather data, build a machine learning model that predicts future flight delays and cancellations. This model and the related visuals are supported by an interactive user application that reports the probability of a given flight being delayed or canceled, to provide more accurate estimates of departure and arrival times for passengers and airline operations. 
+Using historical flight and weather data, build a machine learning model that predicts future flight delays and cancellations. The model predictions are supported by an interactive user application that reports the probability of an input flight being delayed, based on a variety of features that have impacted historical delays. Supporting our predictive flight delay dashboard, are interactive visualizations that analyze the historical 2019 flight data to provide further visual summary. Following future improvements and model optimization, our application aims to provide more accurate estimates of departure and arrival times for passengers and airline operations. 
 
-### Data
-**Dataset: [Kaggle - 2019 Airline Delays with Weather and Airport Detail](https://www.kaggle.com/datasets/threnjen/2019-airline-delays-and-cancellations)**
+## Data Sources
+**Main Dataset: [Kaggle - 2019 Airline Delays with Weather and Airport Detail](https://www.kaggle.com/datasets/threnjen/2019-airline-delays-and-cancellations)**
 
 26 Columns - 1.37 GB
 
 **Dataset Sourced:** 
+
 ***[Bureau of Transportation Statistics](https://www.transtats.bts.gov/databases.asp?Z1qr_VQ=E&Z1qr_Qr5p=N8vn6v10&f7owrp6_VQF=D)***
 ***[National Centers for Environmental Information (NOAA)](https://www.ncdc.noaa.gov/cdo-web/datasets)***
 
-#### Additional Data Used:
 
-**Airports and Locations - JSON Data**
+### Additional External Data Sources:
+
+#### **Airports and Locations - JSON Data**
+
 **[GitHub Gist - `airports.json`](https://gist.github.com/tdreyno/4278655)**
 
-**API Connections for Real-Time Weather Data:**
-**[OpenWeather API](https://openweathermap.org/)**
-**[Weather.Gov API](https://www.weather.gov/documentation/services-web-api)**
 
-## Data Preprocessing
-#### Feature Engineering
-Explain process of predicting for a future flight delay; features changed and calculations required to return meaningful features to train our model.
+#### **API Connections for Real-Time Flight and Weather Data**
+
+**[National Weather Service Government API](https://weather-gov.github.io/api/general-faqs)**
+
+
+**[OpenWeather API](https://openweathermap.org/api)**
 
 #### Target Variable
 **Predicted Flight Delay:** `flight_delayed`
 `0` = No Delay Predicted
 `1` = Delay Over 15 Minutes Predicted
-#### **Features**
+#### **Final Chosen Features**
 Following the process of feature engineering the following were selected for training our model:
-* Harsh Weather Conditions
+* Harsh Weather Conditions,including max wind speed, max temprature, precipation. 
 * High-Delayed Airlines
-* Aircraft Age
-* Air Travel Congestion & Peak Traffic Times
-* Possibility of Prior Tail Segment Delays
+* Day of Week
+* Elements of Air Travel Congestion & Peak Traffic Times
+* Month
 
-## Compiling, Training, and Evaluating the Model
-**Neural Network Structure**
 
-**Model Optimization**
+## Installation
+```python  
+!pip install gdown
+```
+
+```python  
+pip install imblearn
+```
+```python  
+pip install xgboost
+```
+```python  
+!pip install seaborn
+```
+```python  
+!pip install shap
+```
 
 ## Flask Application
 
-A program was created to establish a database with postgres. `db.py` includes all the data points while `db_sample.py` has a randomly selected sample which is easier to run on less powerful machines. `app.py` will use the full database if it is available, but will use the sample database as a backup if not. The data is then queried from the postgres database and returned as jsonified data or used for the various routes and visualizations on the website.
+Program created with postgres to establish a database. **`db.py`** includes all the data points, while **`db_sample.py`** has randomly selected sample data, *easier to run on less powerful machines.* **`app.py`** uses the full database if available, then will use the sample database as a backup if unavailable. Data is then queried from postgres database and returned as jsonified data or used as data routes for user application visuals.
 
 ### /predict endpoint
 This endpoint helps predict the likelihood of flight delays based on various inputs provided by the user. The user enters flight details into an HTML form, and this data is processed and used to predict the probability of a delay.
@@ -78,6 +97,7 @@ Several helper functions are used to streamline data processing:
 
 
 ## Project Summary & Analysis
+*Available in: **`Presentation_SlideDeck.pdf`***
 
 ## Resources
 #### Helpful Documentation

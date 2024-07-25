@@ -148,38 +148,42 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Drawing flight path");
     console.log("Origin", origin);
     console.log("Destination", destination);
-
+  
+    // Remove any existing polylines and markers from the map
     myMap.eachLayer((layer) => {
       if (layer instanceof L.Polyline || layer instanceof L.Marker) {
         myMap.removeLayer(layer);
       }
     });
-
+  
     const originCoords = [parseFloat(origin.lat), parseFloat(origin.lon)];
     const destCoords = [parseFloat(destination.lat), parseFloat(destination.lon)];
-
+  
     console.log("Origin Coordinates:", originCoords);
     console.log("Destination Coordinates:", destCoords);
-
+  
+    // Draw the flight path
     L.polyline([originCoords, destCoords], { color: 'red', weight: 3, dashArray: '10, 10' }).addTo(myMap);
-
+  
     const originPopupContent = originForecast ? createPopupContent(origin, originForecast) : `<div class="popup-content"><p>Forecast unavailable for ${origin.name}</p></div>`;
     const destPopupContent = destinationForecast ? createPopupContent(destination, destinationForecast) : `<div class="popup-content"><p>Forecast unavailable for ${destination.name}</p></div>`;
-
+  
+    // Add markers with popup content
     L.marker(originCoords, { icon: originIcon, title: origin.name })
       .bindPopup(originPopupContent)
       .addTo(myMap)
       .openPopup();
-
+  
     L.marker(destCoords, { icon: destinationIcon, title: destination.name })
       .bindPopup(destPopupContent)
       .addTo(myMap)
       .openPopup();
-
+  
+    // Fit the map bounds to include both markers
     const bounds = L.latLngBounds([originCoords, destCoords]);
     myMap.fitBounds(bounds, { padding: [75, 75] });
-
-    // Call the toggle function to initialize
+  
+    // Initialize toggle buttons after popups have been added
     initializeWeatherToggle();
   }
 
