@@ -6,7 +6,7 @@
 
 3. Open **`flight_delay_predictions.ipynb`** to build predictive learning model and save h5 files.
 
-4. Run **`app.py`** in terminal to launch the flask application, an interactive user dashboard that receives multiple inputs of user flight data, returning an output of **`YES`** or **`NO`** for a predicted flight delay and corresponding visualizations of the input flight and weather report. 
+4. Run **`app.py`** in terminal to launch the flask application. This interactive dashboard allows users to input flight data and provides a predicted percentage chance of flight delay. It also generates visualizations based on the flight and weather data provided.
 
 
 
@@ -28,10 +28,9 @@ Using historical flight and weather data, build a machine learning model that pr
 **Airports and Locations - JSON Data**
 **[GitHub Gist - `airports.json`](https://gist.github.com/tdreyno/4278655)**
 
-**API Connections for Real-Time Flight and Weather Data:**
-**[API Layer - Aviation Stack API](https://apilayer.com/)**
-**[FAA Government Aircraft API Data](https://apilayer.com/)**
+**API Connections for Real-Time Weather Data:**
 **[OpenWeather API](https://openweathermap.org/)**
+**[Weather.Gov API](https://www.weather.gov/documentation/services-web-api)**
 
 ## Data Preprocessing
 #### Feature Engineering
@@ -57,6 +56,26 @@ Following the process of feature engineering the following were selected for tra
 ## Flask Application
 
 A program was created to establish a database with postgres. `db.py` includes all the data points while `db_sample.py` has a randomly selected sample which is easier to run on less powerful machines. `app.py` will use the full database if it is available, but will use the sample database as a backup if not. The data is then queried from the postgres database and returned as jsonified data or used for the various routes and visualizations on the website.
+
+### /predict endpoint
+This endpoint helps predict the likelihood of flight delays based on various inputs provided by the user. The user enters flight details into an HTML form, and this data is processed and used to predict the probability of a delay.
+
+Users enter flight details such as origin, destination, airline, and departure time into a form on the /predict endpoint. JavaScript processes this data and sends it to the server using an AJAX connection.
+
+The server receives the input and extracts necessary details like airport names, flight dates, and times. It uses those inputs to gather live weather data from the openweathermaps and weather.gov APIs as well as monthly flight statistics from the database. These details are then prepared for prediction by encoding and scaling the data appropriately.
+
+The processed data is fed into a machine learning model, which predicts the probability of a flight delay. This probability is then sent back to the web page and displayed to the user.
+
+/predict: This endpoint handles both displaying the form (GET request) and processing the prediction (POST request). When a user submits the form, the server processes the input, queries additional data, and returns the delay probability.
+
+Several helper functions are used to streamline data processing:
+
+- split_airport_string: Extracts the name and code from an airport string.
+- get_flight_data: Parses user input, extracts features, and gathers weather data.
+- dataprep: Prepares the data for the machine learning model.
+- query_monthly_stats: Queries the database for monthly flight statistics.
+- get_dep_time_block: Determines the departure time block based on the hour.
+
 
 ## Project Summary & Analysis
 
