@@ -2,12 +2,9 @@
 
 #### *Instructions*
 1. Run **`python db_sample.py`** to unzip `full_data_flightdelays.csv.zip`, creating a database to store sampled
+    Note: **`db.py`:** Creates database containing full dataset (current flask application utilizes the sample database)
 
 3. Run **`python app.py`** to launch flask application, access predictive the flight delay dashboard and related visualizations
-
-
-#### Additional Files
-**`db.py`:** Creates database containing full dataset (current flask application utilizes the sample database)
 
 **`/notebooks`:** Jupyter lab notebooks containing data preprocessing, feature engineering, model training and analysis of feature selection.
 
@@ -78,6 +75,26 @@ pip install xgboost
 ## Flask Application
 
 Program created with postgres to establish a database. **`db.py`** includes all the data points, while **`db_sample.py`** has randomly selected sample data, *easier to run on less powerful machines.* **`app.py`** uses the full database if available, then will use the sample database as a backup if unavailable. Data is then queried from postgres database and returned as jsonified data or used as data routes for user application visuals.
+
+### /predict endpoint
+This endpoint helps predict the likelihood of flight delays based on various inputs provided by the user. The user enters flight details into an HTML form, and this data is processed and used to predict the probability of a delay.
+
+Users enter flight details such as origin, destination, airline, and departure time into a form on the /predict endpoint. JavaScript processes this data and sends it to the server using an AJAX connection.
+
+The server receives the input and extracts necessary details like airport names, flight dates, and times. It uses those inputs to gather live weather data from the openweathermaps and weather.gov APIs as well as monthly flight statistics from the database. These details are then prepared for prediction by encoding and scaling the data appropriately.
+
+The processed data is fed into a machine learning model, which predicts the probability of a flight delay. This probability is then sent back to the web page and displayed to the user.
+
+/predict: This endpoint handles both displaying the form (GET request) and processing the prediction (POST request). When a user submits the form, the server processes the input, queries additional data, and returns the delay probability.
+
+Several helper functions are used to streamline data processing:
+
+- split_airport_string: Extracts the name and code from an airport string.
+- get_flight_data: Parses user input, extracts features, and gathers weather data.
+- dataprep: Prepares the data for the machine learning model.
+- query_monthly_stats: Queries the database for monthly flight statistics.
+- get_dep_time_block: Determines the departure time block based on the hour.
+
 
 ## Project Summary & Analysis
 *Available in: **`Presentation_SlideDeck.pdf`***
