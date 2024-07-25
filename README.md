@@ -29,13 +29,17 @@ Using historical flight and weather data, build a machine learning model that pr
 ***[National Centers for Environmental Information (NOAA)](https://www.ncdc.noaa.gov/cdo-web/datasets)***
 
 
-#### Additional Data Used:
+### Additional External Data Sources:
 
-**Airports and Locations - JSON Data**
+#### **Airports and Locations - JSON Data**
+
 **[GitHub Gist - `airports.json`](https://gist.github.com/tdreyno/4278655)**
 
-**API Connections for Real-Time Flight and Weather Data**
+
+#### **API Connections for Real-Time Flight and Weather Data**
+
 **[National Weather Service Government API](https://weather-gov.github.io/api/general-faqs)**
+
 **[OpenWeather API](https://openweathermap.org/api)**
 
 ## Installation
