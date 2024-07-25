@@ -1,9 +1,9 @@
 # Predictive Flight Delay Model & User Application
 
 #### *Instructions*
-1. Run **`python db_sample.py`** in terminal to unzip `full_data_flightdelays.csv.zip` and create a new database that stores sampled data into new collections.
+1. Run **`python db_sample.py`** to unzip `full_data_flightdelays.csv.zip`, creating a database to store sampled
 
-3. Run **`python app.py`** in terminal to launch the flask application with multiple routes and access the predictive delay dashboard.
+3. Run **`python app.py`** to launch flask application, access predictive the flight delay dashboard and related visualizations
 
 
 #### Additional Files
