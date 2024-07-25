@@ -72,6 +72,36 @@ pip install xgboost
 !pip install shap
 ```
 
+## Neural Network Model
+
+### Model 1 - Baseline Model
+
+- Two hidden layers with 64 neurons each
+- Activation function: ReLU
+- Output layer: Sigmoid activation
+- Optimizer: Adam
+- Loss function: Binary crossentropy
+
+### Model 2 - Increased Number of Neurons
+
+- Two hidden layers with 128 neurons each
+- Activation function: ReLU
+- Output layer: Sigmoid activation
+- Optimizer: Adam
+- Loss function: Binary crossentropy
+
+### Model 3 - Added Hidden Layer
+
+- Three hidden layers with 64 neurons each
+- Activation function: ReLU
+- Output layer: Sigmoid activation
+- Optimizer: Adam
+- Loss function: Binary crossentropy
+
+### Feature Engineering
+- Iterate Model 1 altering features based on scenarios
+- Concluded Features: AWND, TMAX, DEP_TIME_BLK, DAY_OF_WEEK, PRCP, AIRLINE_AIRPORT_FLIGHTS_MONTH, AIRPORT_FLIGHTS_MONTH, AIRLINE_FLIGHTS_MONTH, MONTH
+
 ## Flask Application
 
 Program created with postgres to establish a database. **`db.py`** includes all the data points, while **`db_sample.py`** has randomly selected sample data, *easier to run on less powerful machines.* **`app.py`** uses the full database if available, then will use the sample database as a backup if unavailable. Data is then queried from postgres database and returned as jsonified data or used as data routes for user application visuals.
