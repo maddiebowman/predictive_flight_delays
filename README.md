@@ -65,7 +65,7 @@ pip install xgboost
 `0` = No Delay Predicted
 `1` = Delay Over 15 Minutes Predicted
 
-### **Final Features Chosen**
+### **Final Feature Selection**
 Following the process of feature engineering the following were selected for training our model:
 * Harsh Weather Conditions,including max wind speed, max temprature, precipation. 
 * High-Delayed Airlines
@@ -83,7 +83,7 @@ Following the process of feature engineering the following were selected for tra
 - Optimizer: Adam
 - Loss function: Binary crossentropy
 
-### Model 2 - Increased Number of Neurons
+### Model 2 - Increasing Number of Neurons
 
 - Two hidden layers with 128 neurons each
 - Activation function: ReLU
@@ -107,6 +107,9 @@ Following the process of feature engineering the following were selected for tra
 
 Program created with postgres to establish a database. **`db.py`** includes all the data points, while **`db_sample.py`** has randomly selected sample data, *easier to run on less powerful machines.* **`app.py`** uses the full database if available, then will use the sample database as a backup if unavailable. Data is then queried from postgres database and returned as jsonified data or used as data routes for user application visuals.
 
+### / Homepage
+![Flask Navigation - Homepage Landing](./static/images/homepage.png)
+
 ### /predict endpoint
 This endpoint helps predict the likelihood of flight delays based on various inputs provided by the user. The user enters flight details into an HTML form, and this data is processed and used to predict the probability of a delay.
 
@@ -114,7 +117,11 @@ Users enter flight details such as origin, destination, airline, and departure t
 
 The server receives the input and extracts necessary details like airport names, flight dates, and times. It uses those inputs to gather live weather data from the openweathermaps and weather.gov APIs as well as monthly flight statistics from the database. These details are then prepared for prediction by encoding and scaling the data appropriately.
 
+![user input - flight predict dashboard](./static/images/airport_selection.png) ![delay probability - flight predict dashboard](./static/images/delay_predictions.png)
+
 The processed data is fed into a machine learning model, which predicts the probability of a flight delay. This probability is then sent back to the web page and displayed to the user.
+
+![flight predictions dashboard](./static/images/flight_dashboard_overview.png)
 
 /predict: This endpoint handles both displaying the form (GET request) and processing the prediction (POST request). When a user submits the form, the server processes the input, queries additional data, and returns the delay probability.
 
@@ -125,6 +132,22 @@ Several helper functions are used to streamline data processing:
 - dataprep: Prepares the data for the machine learning model.
 - query_monthly_stats: Queries the database for monthly flight statistics.
 - get_dep_time_block: Determines the departure time block based on the hour.
+
+![weather_forecast_popup](./static/images/weather_forecast.png)
+
+## Additional Landing Pages/Endpoints
+
+### /visuals
+Route supporting historical visuals (static and dynamic) to further visualize the delay trends in 2019 and the data utilized to build model.
+![visualize landing page](./static/images/visuals_landing.png)
+![heatmap - visualize landing page](./static/images/heatmap.png)
+![line graph - visualize landing page](./static/images/interactive_line_graph.png)
+![weather impact - visualize landing page](./static/images/weather_impact.png)
+
+### /data
+
+Internal routes to JSON data and external links to APIs and datasets used necessary to access in order to support the machine learning model, predictions and supporting visualizations.
+![data landing page](./static/images/data_landing.png)
 
 
 ## Project Summary & Analysis
